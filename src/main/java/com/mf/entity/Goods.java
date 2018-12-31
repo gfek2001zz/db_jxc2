@@ -37,6 +37,12 @@ public class Goods {
 	
 	@Column(length=10)
 	private String unit; // 商品单位
+
+	private String style;
+
+	private String color;
+
+	private String size;
 	
 	private float lastPurchasingPrice; // 上次采购价格
 	
@@ -190,6 +196,30 @@ public class Goods {
 
 	public void setSaleTotal(int saleTotal) {
 		this.saleTotal = saleTotal;
+	}
+
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
 	}
 
 	@Override

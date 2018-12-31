@@ -25,18 +25,6 @@
         });
 
         $("#dg").datagrid({
-			url:"/admin/goods/list",
-            columns:[[
-                {field: 'id', title: '编号', width: 30, align: 'center'},
-                {field: 'code', title: '商品编号', width: 50, align: 'center'},
-                {field: 'name', title: '品名', width: 100, align: 'center'},
-                {field: 'model', title: '型号', width: 50, align: 'center'},
-                {field: 'style', title: '款式', width: 50, align: 'center'},
-                {field: 'color', title: '颜色', width: 50, align: 'center'},
-                {field: 'size', title: '尺寸', width: 50, align: 'center'},
-                {field: 'sellubgPrice', title: '零售价', width: 50, align: 'right', formatter: 'formatPurchasingPrice'},
-                {field: 'purchasingPrice', title: '采购价', width: 50, align: 'right', formatter: 'formatPurchasingPrice'}
-            ]],
             onDblClickRow:function(index,row){
                 $("#dlg2").dialog("open").dialog("setTitle","修改商品信息");
                 $("#fm2").form("load",row);
@@ -444,8 +432,18 @@
 	<div data-options="region:'center'">
 		<table id="dg" title="商品管理" class="easyui-datagrid"
 			fitColumns="true" pagination="true" rownumbers="true" singleSelect="true"
-			fit="true" toolbar="#tb">
-
+			fit="true" toolbar="#tb" url="/admin/goods/list">
+			<thead>
+				<th field="id" width="30" align="center">编号</th>
+				<th field="code" width="50" align="center">商品编号</th>
+				<th field="name" width="100" align="center">品名</th>
+				<th field="model" width="50" align="center">型号</th>
+				<th field="style" width="50" align="center">款式</th>
+				<th field="size" width="50" align="center">尺寸</th>
+				<th field="color" width="50" align="center">颜色</th>
+				<th field="sellingPrice" width="50" align="center" formatter="formatPurchasingPrice">零售价</th>
+				<th field="purchasingPrice" width="50" align="center" formatter="formatPurchasingPrice">采购价</th>
+			</thead>
 		</table>
 
 			<div id="tb">
