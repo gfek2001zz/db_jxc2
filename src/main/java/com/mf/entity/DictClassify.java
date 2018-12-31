@@ -2,11 +2,12 @@ package com.mf.entity;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "t_dict_classify_list")
-public class DictClassify {
+public class DictClassify implements Serializable {
 
     @Id
     @GeneratedValue

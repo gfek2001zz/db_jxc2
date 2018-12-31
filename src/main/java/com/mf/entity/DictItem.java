@@ -1,11 +1,12 @@
 package com.mf.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "t_dict_item_list")
-public class DictItem implements Cloneable {
+public class DictItem implements Cloneable, Serializable {
 
     @Id
     @GeneratedValue
@@ -13,6 +14,12 @@ public class DictItem implements Cloneable {
 
     @Column(length = 45)
     private String classifyCode;
+
+    @ManyToOne(targetEntity = DictClassify.class)
+    @JoinColumn(name = "classifyCode", referencedColumnName = "classifyCode", insertable = false, updatable = false)
+    private DictClassify dictClassify;
+
+    private String classifyName;
 
     @Column(length = 45)
     private String itemCode;
@@ -38,14 +45,6 @@ public class DictItem implements Cloneable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getClassifyCode() {
-        return classifyCode;
-    }
-
-    public void setClassifyCode(String classifyCode) {
-        this.classifyCode = classifyCode;
     }
 
     public String getItemCode() {
@@ -96,6 +95,33 @@ public class DictItem implements Cloneable {
         this.lastUpdateDate = lastUpdateDate;
     }
 
+    public String getClassifyCode() {
+        return classifyCode;
+    }
+
+    public void setClassifyCode(String classifyCode) {
+        this.classifyCode = classifyCode;
+    }
+
+    public String getClassifyName() {
+        if (dictClassify != null) {
+            classifyName = dictClassify.getClassifyName();
+        }
+
+        return classifyName;
+    }
+
+    public void setClassifyName(String classifyName) {
+        this.classifyName = classifyName;
+    }
+
+    public DictClassify getDictClassify() {
+        return dictClassify;
+    }
+
+    public void setDictClassify(DictClassify dictClassify) {
+        this.dictClassify = dictClassify;
+    }
 
     public DictItem cloneObject(String classifyCode) {
         DictItem item = null;
