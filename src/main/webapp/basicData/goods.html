@@ -400,6 +400,18 @@
         })
     }
 
+    function openChooseGoodsBrandDialog() {
+        $("#dlg6").dialog("open").dialog("setTitle","选择商品品牌");
+        $("#dg6").datagrid('load',{
+            "classifyCode": "PRODUCT_BRAND"
+        });
+
+        $("#chooseSave").unbind();
+        $("#chooseSave").bind("click", function() {
+            saveGoodsDictItem("brand");
+        })
+    }
+
 
 
 	function saveGoodsDictItem(fieldId) {
@@ -418,7 +430,6 @@
 
         $("#dlg6").dialog("close");
 	}
-
 </script>
 </head>
 <body class="easyui-layout" style="padding-top: 2px">
@@ -435,6 +446,8 @@
 			fit="true" toolbar="#tb" url="/admin/goods/list">
 			<thead>
 				<th field="id" width="30" align="center">编号</th>
+				<th field="typeName" width="50" align="center" formatter="formatGoodsTypeName">类别</th>
+				<th field="brand" width="50" align="center">品牌</th>
 				<th field="code" width="50" align="center">商品编号</th>
 				<th field="name" width="100" align="center">品名</th>
 				<th field="model" width="50" align="center">型号</th>
@@ -492,9 +505,15 @@
 					</td>
 				</tr>
 				<tr>
+					<td>品牌：</td>
+					<td>
+						<input type="text" id="brand" name="brand" readonly="readonly" required="true" style="width: 120px"  />
+						<a id="chooseGoodsBrandDialog" href="javascript:openChooseGoodsBrandDialog()" class="easyui-linkbutton" iconCls="icon-search" plain="true"></a>
+					</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 					<td>品名：</td>
-					<td colspan="4" id="product_name_td">
-						<input type="text" id="name" name="name" class="easyui-validatebox" readonly="readonly" required="true" style="width: 340px;"  />
+					<td>
+						<input type="text" id="name" name="name" class="easyui-validatebox" readonly="readonly" required="true" style="width: 120px;"  />
 						<a id="chooseGoodsNameDialog" href="javascript:openChooseGoodsNameDialog()" class="easyui-linkbutton" iconCls="icon-search" plain="true"></a>
 					</td>
 				</tr>

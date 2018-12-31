@@ -43,6 +43,8 @@ public class Goods {
 	private String color;
 
 	private String size;
+
+	private String brand;
 	
 	private float lastPurchasingPrice; // 上次采购价格
 	
@@ -220,6 +222,14 @@ public class Goods {
 
 	public void setSize(String size) {
 		this.size = size;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
 	}
 
 	@Override
