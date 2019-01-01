@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.mf.export.impl.ExcelExportTask;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Sort.Direction;
@@ -41,6 +42,9 @@ public class GoodsAdminController {
 	
 	@Resource
 	private LogService logService;
+
+	@Resource
+	private ExcelExportTask excelExportTask;
 	
 	/**
 	 * 分页查询商品信息
@@ -250,6 +254,17 @@ public class GoodsAdminController {
 			logService.save(new Log(Log.UPDATE_ACTION,"修改商品信息"+goods));
 			resultMap.put("success", true);			
 		}
+		return resultMap;
+	}
+
+
+	@RequestMapping("/export")
+	@RequiresPermissions(value = "商品管理")
+	public Map<String, Object> export() throws Exception {
+		Map<String,Object> resultMap=new HashMap<>();
+		excelExportTask.startExport("goods", 1, 100);
+		resultMap.put("success", true);
+
 		return resultMap;
 	}
 

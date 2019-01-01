@@ -11,6 +11,10 @@ public class ExcelContext implements IExcelContext {
 
     private String fileName;
 
+    private Integer page = 1;
+
+    private Integer rows = 100;
+
     public void setSheetMetas(List<SheetMeta> sheetMetas) {
         this.sheetMetas = sheetMetas;
     }
@@ -35,5 +39,21 @@ public class ExcelContext implements IExcelContext {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getRows() {
+        return rows;
+    }
+
+    public void setRows(Integer rows) {
+        this.rows = rows;
     }
 }

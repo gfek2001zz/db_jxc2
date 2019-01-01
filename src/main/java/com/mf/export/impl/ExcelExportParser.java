@@ -17,9 +17,9 @@ public class ExcelExportParser {
 
     public List<SheetMeta> parse(String xmlFile) {
         List<SheetMeta> sheetMetas = new ArrayList<>();
+        SAXParserFactory factory = SAXParserFactory.newInstance();
 
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParserHandler handler = new SAXParserHandler();
             SAXParser parser = factory.newSAXParser();
 

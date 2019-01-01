@@ -1,33 +1,39 @@
 package com.mf.export.impl;
 
 import com.mf.export.IExcelExportConsumer;
+import org.apache.commons.collections.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SheetMeta {
-    private String sheetName;
+    private String name;
 
-    private IExcelExportConsumer consumerBean;
+    private String consumerBean;
 
     private List<ColumnMeta> columnMetas;
 
-    public String getSheetName() {
-        return sheetName;
+    public String getName() {
+        return name;
     }
 
-    public void setSheetName(String sheetName) {
-        this.sheetName = sheetName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public IExcelExportConsumer getConsumerBean() {
+    public String getConsumerBean() {
         return consumerBean;
     }
 
-    public void setConsumerBean(IExcelExportConsumer consumerBean) {
+    public void setConsumerBean(String consumerBean) {
         this.consumerBean = consumerBean;
     }
 
     public List<ColumnMeta> getColumnMetas() {
+        if (CollectionUtils.isEmpty(columnMetas)) {
+            columnMetas = new ArrayList<>();
+        }
+
         return columnMetas;
     }
 

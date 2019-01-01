@@ -11,4 +11,8 @@ public interface IExcelContext {
     long getTaskId();
 
     String getFileName();
+
+    Integer getPage();
+
+    Integer getRows();
 }
