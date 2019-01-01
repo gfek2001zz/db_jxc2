@@ -11,6 +11,7 @@
     <sheet name="皮床" consumerBean="bedExportConsumer">
         <column fieldName="brand" type="string" width="20">品牌</column>
         <column fieldName="model" type="string" width="20">型号</column>
+        <column fieldName="name" type="string" width="20">品名</column>
         <column fieldName="style" type="string" width="20">款式</column>
         <column fieldName="color" type="string" width="20">颜色</column>
         <column fieldName="size" type="string" width="20">尺寸(CM)</column>

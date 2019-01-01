@@ -130,7 +130,7 @@
 	}
 
 	function searchGoods(){
-		$("#dg").datagrid('load',{
+		$("#dg").datagrid('reload',{
 			"name":$("#s_name").val()
 		});
 	}
@@ -433,7 +433,27 @@
 
 
 	function exportGoods() {
-	    window.location = "/admin/goods/export";
+	    var exportUrl = '/admin/goods/export';
+
+	    $.ajax({
+			url: exportUrl,
+			data: {
+                name: $('#s_name').val()
+			},
+			success: function(response, status, request) {
+                var disp = request.getResponseHeader('Content-Disposition');
+                if (disp && disp.search('attachment') != -1) {
+                    var form = $('<form method="POST" action="' + exportUrl + '">');
+                    $.each({name: $('#s_name').val()}, function(k, v) {
+                        form.append($('<input type="hidden" name="' + k +
+							'" value="' + v + '">'));
+                    });
+
+                    $('body').append(form);
+                    form.submit();
+				}
+			}
+		});
 	}
 </script>
 </head>
@@ -472,7 +492,7 @@
 					<a href="javascript:exportGoods()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
 				</div>
 				<div>
-					&nbsp;供应商名称：&nbsp;<input type="text" id="s_name" size="20" onkeydown="if(event.keyCode==13) searchGoods()"/>
+					&nbsp;商品名称：&nbsp;<input type="text" id="s_name" size="20" onkeydown="if(event.keyCode==13) searchGoods()"/>
 					<a href="javascript:searchGoods()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
 				</div>
 			</div>
