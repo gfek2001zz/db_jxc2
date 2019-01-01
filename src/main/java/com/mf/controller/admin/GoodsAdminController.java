@@ -260,9 +260,9 @@ public class GoodsAdminController {
 
 	@RequestMapping("/export")
 	@RequiresPermissions(value = "商品管理")
-	public Map<String, Object> export() throws Exception {
+	public Map<String, Object> export(Goods goods) throws Exception {
 		Map<String,Object> resultMap=new HashMap<>();
-		excelExportTask.startExport("goods", 1, 100);
+		excelExportTask.startExport("goods", goods);
 		resultMap.put("success", true);
 
 		return resultMap;

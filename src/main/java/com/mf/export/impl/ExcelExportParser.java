@@ -15,15 +15,15 @@ public class ExcelExportParser {
     private static final Logger logger = LoggerFactory.getLogger(ExcelExportParser.class);
 
 
-    public List<SheetMeta> parse(String xmlFile) {
+    public List<SheetMeta> parse(ExcelContext context) {
         List<SheetMeta> sheetMetas = new ArrayList<>();
         SAXParserFactory factory = SAXParserFactory.newInstance();
 
         try {
-            SAXExportFileParserHandler handler = new SAXExportFileParserHandler();
+            SAXExportFileParserHandler handler = new SAXExportFileParserHandler(context);
             SAXParser parser = factory.newSAXParser();
 
-            parser.parse(xmlFile, handler);
+            parser.parse(context.getXmlFileName(), handler);
             sheetMetas = handler.getSheetMetas();
 
         } catch (SAXException e) {

@@ -5,7 +5,10 @@ import com.mf.export.IExcelContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
+import javax.annotation.Resource;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @Component
@@ -13,41 +16,42 @@ public class ExcelExportTask {
 
     private static final String CONFIG_NAME = "classpath:%s.export.xml";
 
+    @Resource
+    private ExcelWriteStream excelWriteStream;
+
     /**
      * 分批导出
+     *
      * @param exportType
-     * @param page
-     * @param rows
-     * @throws FileNotFoundException
+     * @param param
+     * @return
+     * @throws IOException
      */
-    public void startExport(String exportType, Integer page, Integer rows) throws FileNotFoundException {
-        IExcelContext context = generateContext(exportType, page, rows);
+    public File startExport(String exportType, Object param) throws IOException {
+        IExcelContext context = generateContext(exportType, param);
 
-
+        return excelWriteStream.generateExcel(context);
     }
 
     /**
      * 构建上下文
      * @param exportType
-     * @param page
-     * @param rows
+     * @param param
      * @return
      * @throws FileNotFoundException
      */
-    private IExcelContext generateContext(String exportType, Integer page, Integer rows) throws FileNotFoundException {
+    private IExcelContext generateContext(String exportType, Object param) throws FileNotFoundException {
         ExcelContext context = new ExcelContext();
 
-        context.setPage(page);
-        context.setRows(rows);
-
         String xmlFile = ResourceUtils.getFile(String.format(CONFIG_NAME, exportType)).getAbsolutePath();
-        context.setFileName(xmlFile);
+        context.setXmlFileName(xmlFile);
 
         ExcelExportParser parser = new ExcelExportParser();
-        List<SheetMeta> sheetMetas = parser.parse(xmlFile);
+        List<SheetMeta> sheetMetas = parser.parse(context);
         context.setSheetMetas(sheetMetas);
 
-        return context;
+        context.setParam(param);
 
+        return context;
     }
 }

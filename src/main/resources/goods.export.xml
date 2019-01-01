@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<sheets>
+<excel name="goodsExport" rows="100">
     <sheet name="床垫" consumerBean="mattressExportConsumer">
         <column fieldName="brand" type="string">品牌</column>
         <column fieldName="model" type="string">型号</column>
@@ -17,4 +17,4 @@
         <column fieldName="sellingPrice" type="double">零售价</column>
         <column fieldName="purchasingPrice" type="double">采购价</column>
     </sheet>
-</sheets>
+</excel>

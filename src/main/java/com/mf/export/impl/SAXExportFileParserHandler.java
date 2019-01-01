@@ -1,13 +1,16 @@
 package com.mf.export.impl;
 
+import com.mf.util.SpringContextUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SAXExportFileParserHandler extends DefaultHandler {
@@ -18,6 +21,12 @@ public class SAXExportFileParserHandler extends DefaultHandler {
     private SheetMeta sheetMeta = null;
 
     private ColumnMeta columnMeta = null;
+
+    private final ExcelContext context;
+
+    public SAXExportFileParserHandler(ExcelContext context) {
+        this.context = context;
+    }
 
     List<SheetMeta> sheetMetas = new ArrayList<>();
     public List<SheetMeta> getSheetMetas() {
@@ -51,6 +60,21 @@ public class SAXExportFileParserHandler extends DefaultHandler {
         } else if ("column".equals(qName)) {
             columnMeta = new ColumnMeta();
             parseXML2Entity(columnMeta, attributes);
+        } else if ("excel".equals(qName)) {
+            int attrNum = attributes.getLength();
+            for (int i = 0; i < attrNum; i ++) {
+                String attrName = attributes.getQName(i);
+
+                if ("name".equals(attrName)) {
+                    Environment env = SpringContextUtils.getBean("environment", Environment.class);
+                    String appFilePath = env.getProperty("excel.export.path");
+
+                    String fileName = appFilePath + attributes.getValue(i) + new Date().getTime() + ".xlsx";
+                    context.setFileName(fileName);
+                } else if("rows".equals(attrName)) {
+                    context.setRows(Integer.valueOf(attributes.getValue(i)));
+                }
+            }
         }
     }
 

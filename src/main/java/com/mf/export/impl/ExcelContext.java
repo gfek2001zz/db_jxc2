@@ -9,7 +9,11 @@ public class ExcelContext implements IExcelContext {
 
     private long taskId;
 
+    private Object param;
+
     private String fileName;
+
+    private String xmlFileName;
 
     private Integer page = 1;
 
@@ -41,6 +45,14 @@ public class ExcelContext implements IExcelContext {
         this.fileName = fileName;
     }
 
+    public String getXmlFileName() {
+        return xmlFileName;
+    }
+
+    public void setXmlFileName(String xmlFileName) {
+        this.xmlFileName = xmlFileName;
+    }
+
     public Integer getPage() {
         return page;
     }
@@ -55,5 +67,13 @@ public class ExcelContext implements IExcelContext {
 
     public void setRows(Integer rows) {
         this.rows = rows;
+    }
+
+    public Object getParam() {
+        return param;
+    }
+
+    public void setParam(Object param) {
+        this.param = param;
     }
 }

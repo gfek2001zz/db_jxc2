@@ -12,7 +12,11 @@ public interface IExcelContext {
 
     String getFileName();
 
+    String getXmlFileName();
+
     Integer getPage();
 
     Integer getRows();
+
+    Object getParam();
 }
