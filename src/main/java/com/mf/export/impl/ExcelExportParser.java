@@ -20,7 +20,7 @@ public class ExcelExportParser {
         SAXParserFactory factory = SAXParserFactory.newInstance();
 
         try {
-            SAXParserHandler handler = new SAXParserHandler();
+            SAXExportFileParserHandler handler = new SAXExportFileParserHandler();
             SAXParser parser = factory.newSAXParser();
 
             parser.parse(xmlFile, handler);

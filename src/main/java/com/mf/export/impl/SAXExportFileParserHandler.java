@@ -1,7 +1,5 @@
 package com.mf.export.impl;
 
-import com.mf.export.IExcelExportConsumer;
-import com.mf.util.SpringContextUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,12 +7,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SAXParserHandler extends DefaultHandler {
-    private static final Logger logger = LoggerFactory.getLogger(SAXParserHandler.class);
+public class SAXExportFileParserHandler extends DefaultHandler {
+    private static final Logger logger = LoggerFactory.getLogger(SAXExportFileParserHandler.class);
 
     String value = null;
 
