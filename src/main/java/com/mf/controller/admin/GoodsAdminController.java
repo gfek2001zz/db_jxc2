@@ -1,14 +1,21 @@
 package com.mf.controller.admin;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.mf.export.impl.ExcelExportTask;
+import com.sun.deploy.net.HttpResponse;
+import com.sun.deploy.net.URLEncoder;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +37,7 @@ import com.mf.util.StringUtil;
 @RestController
 @RequestMapping("/admin/goods")
 public class GoodsAdminController {
+    private static final Logger logger = LoggerFactory.getLogger(GoodsAdminController.class);
 
 	@Resource
 	private GoodsService goodsService;
@@ -257,15 +265,58 @@ public class GoodsAdminController {
 		return resultMap;
 	}
 
-
+    /**
+     * 导出商品
+     *
+     * @param goods
+     * @param httpResponse
+     * @throws Exception
+     */
 	@RequestMapping("/export")
 	@RequiresPermissions(value = "商品管理")
-	public Map<String, Object> export(Goods goods) throws Exception {
-		Map<String,Object> resultMap=new HashMap<>();
-		excelExportTask.startExport("goods", goods);
-		resultMap.put("success", true);
+	public void export(Goods goods, HttpServletResponse httpResponse)
+            throws Exception {
+		File excelFile = excelExportTask.startExport("goods", goods);
 
-		return resultMap;
+        if (excelFile.exists()) {
+            httpResponse.setHeader("content-type", "application/octet-stream");
+            httpResponse.setContentType("application/octet-stream");
+            httpResponse.setHeader("Content-Disposition", "attachment;filename=" +
+                    URLEncoder.encode(excelFile.getName(), "UTF-8"));
+
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(excelFile);
+                bis = new BufferedInputStream(fis);
+
+                OutputStream os = httpResponse.getOutputStream();
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer, 0, i);
+                    os.flush();
+                    i = bis.read(buffer);
+                }
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+        }
 	}
 
 }
