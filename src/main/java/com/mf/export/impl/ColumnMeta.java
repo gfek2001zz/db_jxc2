@@ -9,6 +9,8 @@ public class ColumnMeta {
 
     private String type;
 
+    private Integer width;
+
     public String getFieldName() {
         return fieldName;
     }
@@ -31,5 +33,13 @@ public class ColumnMeta {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 }

@@ -4,7 +4,6 @@ import com.mf.export.IExcelContext;
 import com.mf.export.IExcelExportConsumer;
 import com.mf.util.SpringContextUtils;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -77,21 +76,22 @@ public class ExcelWriteStream {
     private void createTitleRow(List<ColumnMeta> columnMetas, Workbook wb, Sheet sheet) {
         Row row = sheet.createRow(0);
         CellStyle style = wb.createCellStyle();
-        style.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
-        style.setVerticalAlignment(style.getVerticalAlignment().CENTER);// 垂直
-        style.setAlignment(style.getAlignment().CENTER);// 水平
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFillForegroundColor(IndexedColors.SKY_BLUE.getIndex());
+        style.setVerticalAlignment(VerticalAlignment.CENTER);// 垂直
+        style.setAlignment(HorizontalAlignment.CENTER);// 水平
 
-        style.setBorderTop(style.getBorderTop().THIN);
-        style.setTopBorderColor(IndexedColors.BLACK.index);
-        style.setBorderLeft(style.getBorderLeft().THIN);
-        style.setLeftBorderColor(IndexedColors.BLACK.index);
-        style.setBorderRight(style.getBorderRight().THIN);
-        style.setRightBorderColor(IndexedColors.BLACK.index);
-        style.setBorderBottom(style.getBorderBottom().THIN);
-        style.setBottomBorderColor(IndexedColors.BLACK.index);
+        style.setBorderTop(BorderStyle.THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(BorderStyle.THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 
         Font font = wb.createFont();
-        font.setColor(IndexedColors.BLACK.index);
+        font.setColor(IndexedColors.BLACK.getIndex());
         style.setFont(font);
 
         int cellIdx = 0;
@@ -120,6 +120,11 @@ public class ExcelWriteStream {
                 Cell cell = row.createCell(cellIdx);
                 try {
                     cell.setCellValue(BeanUtils.getProperty(obj, columnMeta.getFieldName()));
+
+                    if (columnMeta.getWidth() != null && columnMeta.getWidth() > 0) {
+                        sheet.setColumnWidth(cellIdx, columnMeta.getWidth() * 256);
+                    }
+
                 } catch (Exception ex) {
                     logger.error(ex.getMessage(), ex);
                 }
