@@ -266,7 +266,7 @@ public class GoodsAdminController {
 	}
 
     /**
-     * 导出商品
+     * 导出商品 test
      *
      * @param goods
      * @param httpResponse
