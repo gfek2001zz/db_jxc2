@@ -9,6 +9,8 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.mf.entity.*;
+import com.mf.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -17,18 +19,11 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mf.entity.Log;
-import com.mf.entity.SaleCount;
-import com.mf.entity.SaleList;
-import com.mf.entity.SaleListGoods;
-import com.mf.service.LogService;
-import com.mf.service.SaleListGoodsService;
-import com.mf.service.SaleListService;
-import com.mf.service.UserService;
 import com.mf.util.DateUtil;
 import com.mf.util.MathUtil;
 import com.mf.util.StringUtil;
@@ -47,6 +42,9 @@ public class SaleListAdminController {
 	
 	@Resource
 	private SaleListGoodsService saleListGoodsService;
+
+	@Resource
+    private SaleListPersonService saleListPersonService;
 	
 	@Resource
 	private UserService userService;
@@ -89,12 +87,14 @@ public class SaleListAdminController {
 	 */
 	@RequestMapping("/save")
 	@RequiresPermissions(value="销售出库")
-	public Map<String,Object> save(SaleList saleList,String goodsJson)throws Exception{
+	public Map<String,Object> save(SaleList saleList,String goodsJson, String salePersonsJson)throws Exception{
 		Map<String,Object> resultMap=new HashMap<>();
 		saleList.setUser(userService.findByUserName((String) SecurityUtils.getSubject().getPrincipal())); // 设置操作用户
 		Gson gson=new Gson();
 		List<SaleListGoods> plgList=gson.fromJson(goodsJson,new TypeToken<List<SaleListGoods>>(){}.getType());
-		saleListService.save(saleList, plgList);
+		List<SaleListPerson> psnList = gson.fromJson(salePersonsJson, new TypeToken<List<SaleListPerson>>(){}.getType());
+
+		saleListService.save(saleList, plgList, psnList);
 		logService.save(new Log(Log.ADD_ACTION,"添加销售单"));
 		resultMap.put("success", true);
 		return resultMap;
@@ -108,9 +108,21 @@ public class SaleListAdminController {
 	 */
 	@RequestMapping("/list")
 	@RequiresPermissions(value={"销售单据查询","客户统计"},logical=Logical.OR)
-	public Map<String,Object> list(SaleList saleList)throws Exception{
+	public Map<String,Object> list(SaleList saleList, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows)throws Exception{
 		Map<String,Object> resultMap=new HashMap<>();
-		List<SaleList> saleListList=saleListService.list(saleList, Direction.DESC, "saleDate");
+		List<SaleList> saleListList=saleListService.list(saleList, page, rows, Direction.DESC, "saleDate");
+		for (SaleList saleList1 : saleListList) {
+            List<SaleListPerson> saleListPeople = saleListPersonService.findListBySaleListId(saleList1);
+
+            StringBuffer buffer = new StringBuffer();
+            for (SaleListPerson saleListPerson : saleListPeople) {
+                buffer.append(saleListPerson.getUser().getTrueName()).append(":")
+                        .append(saleListPerson.getAmount() * 100 / 100.0F).append(";");
+            }
+
+            saleList1.setSaleListPerson(buffer.toString());
+        }
+
 		resultMap.put("rows", saleListList);
 		logService.save(new Log(Log.SEARCH_ACTION,"销售单查询"));
 		return resultMap;
@@ -125,9 +137,9 @@ public class SaleListAdminController {
 	 */
 	@RequestMapping("/listCount")
 	@RequiresPermissions(value="商品销售统计")
-	public Map<String,Object> listCount(SaleList saleList,SaleListGoods saleListGoods)throws Exception{
+	public Map<String,Object> listCount(SaleList saleList,SaleListGoods saleListGoods, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows)throws Exception{
 		Map<String,Object> resultMap=new HashMap<>();
-		List<SaleList> saleListList=saleListService.list(saleList, Direction.DESC, "saleDate");
+		List<SaleList> saleListList=saleListService.list(saleList, page, rows, Direction.DESC, "saleDate");
 		for(SaleList sl:saleListList){
 			saleListGoods.setSaleList(sl);
 			List<SaleListGoods> slgList=saleListGoodsService.list(saleListGoods);

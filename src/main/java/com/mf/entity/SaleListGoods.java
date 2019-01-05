@@ -49,12 +49,17 @@ public class SaleListGoods {
 	
 	@Column(length=10)
 	private String unit; // 商品单位
+
+	@Column
+	private String size; //商品尺寸
 	
 	private float price; // 单价
 	
 	private int num; // 数量
 	
 	private float total; // 总金额
+
+	private float totalCost; //成本价
 	
 	@Transient
 	private String codeOrName; // 查询用到 根据商品编码或者商品名称查询
@@ -155,8 +160,22 @@ public class SaleListGoods {
 	public void setTotal(float total) {
 		this.total = total;
 	}
-	
-	
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
+	}
+
+	public float getTotalCost() {
+		return totalCost;
+	}
+
+	public void setTotalCost(float totalCost) {
+		this.totalCost = totalCost;
+	}
 
 	public String getCodeOrName() {
 		return codeOrName;

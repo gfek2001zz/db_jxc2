@@ -27,7 +27,6 @@
 			customerId=$("#s_customer").combobox("getValue");
 		}
 		$("#dg").datagrid({
-			url:'/admin/saleList/list',
 			queryParams:{
 				saleNumber:$("#s_saleNumber").val(),
 				"customer.id":customerId,
@@ -43,7 +42,11 @@
 	}
 	
 	function formatAmountPayable(val,row){
-		return "¥"+val;
+	    if (val) {
+            return "¥"+val.toFixed(2);
+		} else {
+	        return "¥0.00"
+		}
 	}
 	
 	function formatUser(val,row){
@@ -92,11 +95,15 @@
 	
 	
 	function formatPrice(val,row){
-		return "¥"+val;
+        if (val) {
+            return "¥"+val.toFixed(2);
+        }
 	}
-	
+
 	function formatTotal(val,row){
-		return "¥"+val;
+	    if (val) {
+            return "¥"+val.toFixed(2);
+		}
 	}
 
 	function formatAddress(val, row) {
@@ -108,44 +115,45 @@
 	}
 
 	function formatRate(val, row) {
-	    return val + "%";
+        if (val) {
+            return val.toFixed(2) + "%";
+        }
+	}
+
+	function formatTrueName(val, row) {
+	    if (val) {
+	        return val.trueName;
+		}
 	}
 </script>
 </head>
 <body class="easyui-layout" style="margin: 1px">
  <div region="north" style="height: 350px">
 	<table id="dg" title="销售单据查询" class="easyui-datagrid"
-	fitColumns="true"  rownumbers="true" singleSelect="true"
-	 fit="true" toolbar="#tb">
+	fitColumns="false" pagination="true" rownumbers="true" singleSelect="true"
+	fit="true" toolbar="#tb" url="/admin/saleList/list">
 		<thead>
-			<!--<th field="id" width="20" align="center" hidden="true">销售单ID</th>-->
-			<!--<th field="saleNumber" width="30" align="center">销售单号</th>-->
-			<!--<th field="saleDate" width="20" align="center">销售日期</th>-->
-			<!--<th field="customer" width="50" align="center" formatter="formatSupplier">客户</th>-->
-			<!--<th field="amountPayable" width="20" align="right" formatter="formatAmountPayable">销售金额</th>-->
-			<!--<th field="user" width="20" align="center" formatter="formatUser">操作员</th>-->
-			<!--<th field="remarks" width="100" align="center">备注</th>-->
-
 			<th field="id" width="20" align="center" hidden="true">销售单ID</th>
-			<th field="saleDate" width="50" align="center">销售日期</th>
+			<th field="saleDate" width="80" align="center">销售日期</th>
 			<th field="shop" width="50" align="center" formatter="formatSupplier">门店</th>
-			<th field="customer" width="50" align="center" formatter="formatSupplier">客户</th>
-			<th field="contractNumber" width="50" align="center">合同编号</th>
-			<th field="amountPayable" width="50" align="right" formatter="formatAmountPayable">销售金额</th>
-			<th field="amountPaid" width="50" align="right" formatter="formatAmountPayable">实收金额</th>
-			<th field="amount_earnest" width="50" align="right" formatter="formatAmountPayable">实收定金</th>
-			<th field="amount_final_payment" width="50" align="right" formatter="formatAmountPayable">实收尾款</th>
-			<th field="amount_balance" width="50" align="right" formatter="formatAmountPayable">待收尾款</th>
-			<th field="customer" width="50" align="center" formatter="formatAddress">地址</th>
-			<th field="customer" width="50" align="center" formatter="formatContact">电话</th>
-			<th field="grossProfit" width="50" align="right">毛利</th>
-			<th field="grossProfitRate" width="50" align="right" formatter="formatRate">毛利率</th>
-			<th field="card" width="50" align="center" formatter="formatSupplier">款项去向</th>
-			<th field="salesPerson" width="50" align="center">销售员</th>
+			<th field="customer" width="100" align="center" formatter="formatSupplier">客户</th>
+			<th field="customer" width="100" align="center" formatter="formatAddress">地址</th>
+			<th field="customer" width="100" align="center" formatter="formatContact">电话</th>
+
+			<th field="contractNumber" width="80" align="center">合同编号</th>
+			<th field="amountPayable" width="80" align="right" formatter="formatAmountPayable">销售金额</th>
+			<th field="amountPaid" width="60" align="right" formatter="formatAmountPayable">实收金额</th>
+			<th field="amount_earnest" width="60" align="right" formatter="formatAmountPayable">实收定金</th>
+			<th field="amount_final_payment" width="60" align="right" formatter="formatAmountPayable">实收尾款</th>
+			<th field="amount_balance" width="60" align="right" formatter="formatAmountPayable">待收尾款</th>
+			<th field="grossProfit" width="60" align="right" formatter="formatAmountPayable">毛利</th>
+			<th field="grossProfitRate" width="60" align="right" formatter="formatRate">毛利率</th>
+			<th field="card" width="100" align="center" formatter="formatSupplier">款项去向</th>
+			<th field="saleListPerson" width="150" align="center">销售员</th>
 			<th field="factoryDate" width="80" align="center">工厂下单时间</th>
-			<th field="deliveryDate" width="50" align="center">送货日期</th>
-			<th field="matchmaker" width="50" align="center">媒人</th>
-			<th field="user" width="50" align="center" formatter="formatSupplier">制单人</th>
+			<th field="deliveryDate" width="80" align="center">送货日期</th>
+			<th field="matchmaker" width="80" align="center">媒人</th>
+			<th field="user" width="80" align="center" formatter="formatTrueName">制单人</th>
 		</thead>
 	</table>
 	

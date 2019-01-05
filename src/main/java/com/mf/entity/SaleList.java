@@ -3,18 +3,10 @@ package com.mf.entity;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 销售单实体
@@ -35,6 +27,14 @@ public class SaleList {
 	@ManyToOne
 	@JoinColumn(name="customerId")
 	private Customer customer; // 客户
+
+	@ManyToOne
+	@JoinColumn(name="shopId")
+	private Shop shop; //门店
+
+	@ManyToOne
+	@JoinColumn(name="cardId")
+	private Card card; //卡号
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date saleDate; // 销售日期
@@ -48,6 +48,26 @@ public class SaleList {
 	private float amountPayable; // 应付金额
 	
 	private float amountPaid; // 实付金额
+
+	private float amountEarnest; //实收定金
+
+	private float amountFinalPayment; //待收余额
+
+	private float amountCostPrice; //成本价
+
+	@Transient
+	private float amountBalance;
+
+	private String contractNumber;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date factoryDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date deliveryDate;
+
+	private String matchmaker;
+
 	
 	private Integer state; // 交易状态 1 已付 2 未付
 	
@@ -60,6 +80,16 @@ public class SaleList {
 	
 	@Transient
 	private List<SaleListGoods> saleListGoodsList=null; // 销售单商品集合
+
+    @Transient
+    private String saleListPerson;
+
+
+    @Transient
+    private Float grossProfit;
+
+    @Transient
+    private Float grossProfitRate;
 
 	public Integer getId() {
 		return id;
@@ -162,7 +192,123 @@ public class SaleList {
 		this.saleListGoodsList = saleListGoodsList;
 	}
 
-	@Override
+	public Shop getShop() {
+		return shop;
+	}
+
+	public void setShop(Shop shop) {
+		this.shop = shop;
+	}
+
+	public Card getCard() {
+		return card;
+	}
+
+	public void setCard(Card card) {
+		this.card = card;
+	}
+
+    public String getSaleListPerson() {
+        return saleListPerson;
+    }
+
+    public void setSaleListPerson(String saleListPerson) {
+        this.saleListPerson = saleListPerson;
+    }
+
+    public float getAmountEarnest() {
+		return amountEarnest;
+	}
+
+	public void setAmountEarnest(float amountEarnest) {
+		this.amountEarnest = amountEarnest;
+	}
+
+	public float getAmountFinalPayment() {
+		return amountFinalPayment;
+	}
+
+	public void setAmountFinalPayment(float amountFinalPayment) {
+		this.amountFinalPayment = amountFinalPayment;
+	}
+
+	public float getAmountBalance() {
+		return amountBalance;
+	}
+
+	public void setAmountBalance(float amountBalance) {
+		this.amountBalance = amountBalance;
+	}
+
+	public String getContractNumber() {
+		return contractNumber;
+	}
+
+	public void setContractNumber(String contractNumber) {
+		this.contractNumber = contractNumber;
+	}
+
+	@JsonSerialize(using=CustomDateSerializer.class)
+	public Date getFactoryDate() {
+		return factoryDate;
+	}
+
+	public void setFactoryDate(Date factoryDate) {
+		this.factoryDate = factoryDate;
+	}
+
+	@JsonSerialize(using=CustomDateSerializer.class)
+	public Date getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(Date deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public String getMatchmaker() {
+		return matchmaker;
+	}
+
+	public void setMatchmaker(String matchmaker) {
+		this.matchmaker = matchmaker;
+	}
+
+    public float getAmountCostPrice() {
+        return amountCostPrice;
+    }
+
+    public void setAmountCostPrice(float amountCostPrice) {
+        this.amountCostPrice = amountCostPrice;
+    }
+
+    public Float getGrossProfit() {
+	    if (grossProfit == null) {
+	        grossProfit = amountPayable - amountCostPrice;
+        }
+
+        return grossProfit;
+    }
+
+
+    public void setGrossProfit(Float grossProfit) {
+        this.grossProfit = grossProfit;
+    }
+
+    public Float getGrossProfitRate() {
+	    if (grossProfitRate == null) {
+	        grossProfitRate = (getGrossProfit() / amountPayable) * 100.0F;
+        }
+
+
+        return grossProfitRate;
+    }
+
+    public void setGrossProfitRate(Float grossProfitRate) {
+        this.grossProfitRate = grossProfitRate;
+    }
+
+    @Override
 	public String toString() {
 		return "SaleList [id=" + id + ", saleNumber=" + saleNumber + ", customer=" + customer
 				+ ", saleDate=" + saleDate + ", amountPayable=" + amountPayable + ", amountPaid=" + amountPaid

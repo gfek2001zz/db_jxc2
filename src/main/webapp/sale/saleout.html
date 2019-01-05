@@ -5,10 +5,40 @@
 <title>销售出库</title>
 <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
 <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+<style type="text/css">
+	.frm-container {
+		margin-bottom: 5px;
+		clear: both;
+		overflow: hidden;
+		text-align: center;
+	}
+
+	.frm-field {
+		float:left;
+		width: 300px;
+		margin-right: 10px;
+	}
+
+	.frm-label {
+		float:left;
+		width: 100px;
+	}
+
+	.frm-control {
+		float: left;
+		width: 160px;
+	}
+
+	.frm-control input {
+		width: 178px;
+	}
+
+</style>
 <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
 <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="/static/js/date.js"></script>
+
 <script type="text/javascript">
 	
 	var url;
@@ -52,6 +82,8 @@
 				var result=eval('('+result+')');
 				if(result.success){
 					alert("保存成功！");
+
+                    salePersonRemoveAll();
 					window.location.reload();
 				}else{
 					$.messager.alert("系统提示",result.errorInfo);
@@ -93,16 +125,20 @@
 	}
 	
 	// 销售出库模块
-	
 	function setSaleListAmount(){
 		var rows=$("#dg").datagrid("getRows");
 		var amount=0;
+		var amountCostPrice=0;
 		for(var i=0;i<rows.length;i++){
 			var row=rows[i];
 			amount+=row.total;
+			amountCostPrice +=row.totalCost;
 		}
 		$("#amountPayable").val(amount.toFixed(2));
 		$("#amountPaid").val(amount.toFixed(2));
+		$('#amountEarnest').val(0);
+		$('#amountFinalPayment').val(0);
+		$('#amountCostPrice').val(amountCostPrice.toFixed(2))
 	}
 	
 	function openSaleListGoodsAddDialog(){
@@ -157,6 +193,8 @@
 		$("#fm2").form("load",row);
 		$("#sellingPrice").val("¥"+row.sellingPrice);
 		$("#price").numberbox("setValue",row.sellingPrice);
+		$("#purchasingPrice").val("¥"+row.purchasingPrice);
+		$('#costPrice').numberbox('setValue', row.purchasingPrice);
 		$("#action").val("add");
 		$("#num").focus();
 	}
@@ -175,19 +213,21 @@
 			var selectedRows=$("#dg2").datagrid("getSelections");
 			var row=selectedRows[0];
 			var price=$("#price").numberbox("getValue");
+			var costPrice =$('#costPrice').numberbox('getValue');
 			var num=$("#num").numberbox("getValue");
 			var total=price*num;
+			var totalCost = costPrice*num;
 			$("#dg").datagrid("appendRow",{
 				code:row.code,
 				name:row.name,
 				model:row.model,
-				unit:row.unit,
+				size:row.size,
 				price:price,
 				num:num,
 				total:total,
+                totalCost:totalCost,
 				typeId:row.type.id,
 				goodsId:row.id,
-				inventoryQuantity:row.inventoryQuantity,
 				sellingPrice:row.sellingPrice
 			});
 		}else if(action=="modify"){
@@ -195,7 +235,9 @@
 			var selectedRows=$("#dg").datagrid("getSelections");
 			var row=selectedRows[0];
 			var price=$("#price").numberbox("getValue");
+            var costPrice =$('#costPrice').numberbox('getValue');
 			var num=$("#num").numberbox("getValue");
+            var totalCost = costPrice*num;
 			var total=price*num;
 			$("#dg").datagrid("updateRow",{
 				index:rowIndex,
@@ -207,9 +249,9 @@
 					price:price,
 					num:num,
 					total:total,
+                    totalCost:totalCost,
 					typeId:row.typeId,
 					goodsId:row.id,
-					inventoryQuantity:row.inventoryQuantity,
 					sellingPrice:row.sellingPrice
 				}
 			});
@@ -232,7 +274,6 @@
 	}
 	
 	// 商品类别模块
-	
 	function openGoodsTypeAddDialog(){
 		$("#dlg3").dialog("open").dialog("setTitle","新增商品类别");
 	}
@@ -276,8 +317,126 @@
 		$("#dlg3").dialog("close");
 		$('#goodsTypeName').val('');
 	}
+
+
+	function openChooseSalePersonDialog() {
+	    var shopId = $("#shopId").combobox('getValue');
+	    if (!shopId) {
+            $.messager.alert("系统提示","请先选择门店！");
+            return;
+		}
+
+        $("#dlg4").dialog("open").dialog("setTitle","选择销售员");
+	}
+
+	function openSalePersonAddDialog() {
+        var shopId = $("#shopId").combobox('getValue');
+		$('#dlg5').dialog('open').dialog('setTitle', '选择销售员');
+		$('#dg5').datagrid('load', {
+            shop: shopId
+        });
+	}
+
+    function deleteSalePerson() {
+        var user = $('#dg4').datagrid('getSelected');
+        var rows = $('#dg4').datagrid('getRows');
+        var index = -1;
+        for (var i = 0; i < rows.length; i ++) {
+            var row = rows[i];
+            if (row.user.id == user.user.id) {
+                index = i;
+                break;
+            }
+        }
+
+        $('#dg4').datagrid('deleteRow', index);
+	}
+
+
+	function salePersonRemoveAll() {
+        var rows = $('#dg4').datagrid('getRows');
+        for (var i = rows.length - 1; i >= 0; i --) {
+            $('#dg4').datagrid('deleteRow', i);
+        }
+    }
+
+    function saveSalePerson() {
+        var rows = $('#dg4').datagrid('getRows');
+        var salePerson = "";
+        for (var i = 0; i < rows.length; i ++) {
+            var row = rows[i];
+            salePerson += row.user.trueName + "：" + row.amount + ";"
+        }
+        $('#salePersonDisplay').val(salePerson);
+        $("#salePersonsJson").val(JSON.stringify($("#dg4").datagrid("getData").rows));
+
+        closeSalePersonDialog();
+    }
+
+	function closeSalePersonDialog() {
+        $('#dlg4').dialog('close');
+    }
+
+	function formatName(val, row) {
+        return val.trueName;
+	}
+
+	function saveUser() {
+        $("#amount").numberbox('setValue', '');
+        $('#dlg6').dialog('open').dialog('setTitle', '销售金额');
+	}
+
+
+	function saveUserAmount() {
+	    if ($("#amount").val() == '') {
+            $.messager.alert("系统提示","请先选择销售金额！");
+            return;
+		}
+
+        var userData = $('#dg5').datagrid('getSelected');
+		var rows = $('#dg4').datagrid('getRows');
+		var index = -1;
+		for (var i = 0; i < rows.length; i ++) {
+		    var row = rows[i];
+		    if (row.user.id == userData.id) {
+				index = i;
+				break;
+			}
+		}
+
+		if (index > -1) {
+			$('#dg4').datagrid('updateRow', {
+                index: index,
+                row: {
+                    user: userData,
+                    amount: $("#amount").val()
+                }
+			})
+		} else {
+            $('#dg4').datagrid('insertRow', {
+                index: 0,
+                row: {
+                    user: userData,
+                    amount: $("#amount").val()
+                }
+            });
+		}
+
+        $('#dlg6').dialog('close');
+        $('#dlg5').dialog('close');
+	}
+
+	function closeUserAmountDialog() {
+        $('#dlg6').dialog('close');
+	}
+
+	function closeUserDialog() {
+        $('#dlg5').dialog('close');
+	}
     
 	$(document).ready(function() {
+
+        $("#saleDate").datebox("setValue",genTodayStr());
 		
 		$("#dg").datagrid({
 			onDblClickRow:function(index,row){
@@ -299,73 +458,175 @@
 				$("#dlg2").dialog("open").dialog("setTitle","选择商品");
 				$("#fm2").form("load",row);
 				$("#sellingPrice").val("¥"+row.sellingPrice);
+                $("#purchasingPrice").val("¥"+row.purchasingPrice);
 				$("#price").numberbox("setValue",row.sellingPrice);
+                $("#costPrice").numberbox("setValue",row.purchasingPrice);
 				$("#action").val("add");
 				$("#num").focus();
 			}
 		});
-		
-	
-		
+
+
+		$('#dg4').datagrid({
+            onDblClickRow:function(index, row) {
+                openSalePersonAddDialog();
+            }
+        });
+
+
+        $('#dg5').datagrid({
+            onDblClickRow:function(index, row) {
+                saveUser();
+            }
+        });
+
 	});
 	
 	
 </script>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north'" style="height: 135px;padding: 10px;border: 0px;padding-top: 20px">
+	<div data-options="region:'north'" style="height: 215px;padding: 10px;border: 0px;padding-top: 20px">
 		<fieldset style="border-color: #E7F0FF">
 			<legend>单号：<span id="dh"></span></legend>
 			<form id="fm" method="post">
-				<table cellspacing="8px">
-					<tr>
-						<td>
-						客&nbsp;户：<input class="easyui-combobox" id="customerId" name="customer.id" style="width: 200px" required="true" data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/customer/comboList'"/>
-						</td>
-						<td>
-							&nbsp;&nbsp;&nbsp;&nbsp;应付金额：<input type="text" id="amountPayable" name="amountPayable" class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
-						</td>
-						<td>
-							&nbsp;&nbsp;&nbsp;&nbsp;实付金额：<input type="text" id="amountPaid" name="amountPaid" class="easyui-validatebox" required="true"  size="10"/>
-						</td>
-						<td>
-							&nbsp;&nbsp;&nbsp;&nbsp;销售日期：<input type="text" id="saleDate" name="saleDate" class="easyui-datebox" required="true" data-options="editable:false" size="18"/>
-						</td>
-						<td>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="3">
-						           备&nbsp;注：<input type="text" id="remarks" name="remarks"   size="78"/>
-						</td>
-						<td>
-							&nbsp;&nbsp;&nbsp;&nbsp;是否付款：<select class="easyui-combobox" id="state" name="state" style="width: 160px" editable=false panelHeight="auto">
-							  <option value="1">已付</option>
-							  <option value="2">未付</option>
-							</select>
-						</td>
-						<td>
-						    <input type="hidden" id="saleNumber" name="saleNumber"/>
-						    <input type="hidden" id="goodsJson" name="goodsJson"/>
-							&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:saveSaleGoods()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
-						</td>
-					</tr>
-				</table>
+				<div class="frm-container">
+					<div class="frm-field">
+						<span class="frm-label">门店：</span>
+						<span class="frm-control">
+							<input class="easyui-combobox" id="shopId" name="shop.id" style="width: 180px" required="true"
+								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/shop/comboList'"/>
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">客户：</span>
+						<span class="frm-control">
+							<input class="easyui-combobox" id="customerId" name="customer.id" style="width: 180px" required="true"
+								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/customer/comboList'"/>
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">款项去向：</span>
+						<span class="frm-control">
+							<input class="easyui-combobox" id="cardId" name="card.id" style="width: 180px" required="true"
+								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/card/comboList'"/>
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">合同号：</span>
+						<span class="frm-control">
+							<input type="text" name="contractNumber" size="10" />
+						</span>
+					</div>
+				</div>
+
+				<div class="frm-container">
+					<div class="frm-field">
+						<span class="frm-label">销售金额：</span>
+						<span class="frm-control">
+							<input type="text" id="amountPayable" name="amountPayable"
+                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+
+                            <input type="hidden" id="amountCostPrice" name="amountCostPrice" />
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">实付金额：</span>
+						<span class="frm-control">
+							<input type="text" id="amountPaid" name="amountPaid"
+                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">实收定金：</span>
+						<span class="frm-control">
+							<input type="text" id="amountEarnest" name="amountEarnest"
+                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">实收尾款：</span>
+						<span class="frm-control">
+							<input type="text" id="amountFinalPayment" name="amountFinalPayment"
+                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+						</span>
+					</div>
+				</div>
+
+				<div class="frm-container">
+					<div class="frm-field">
+						<span class="frm-label">工厂下单时间：</span>
+						<span class="frm-control">
+							<input type="text" name="factoryDate" class="easyui-datebox" style="width: 180px" required="true" />
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">送货时间：</span>
+						<span class="frm-control">
+							<input type="text" name="deliveryDate" class="easyui-datebox" style="width: 180px" required="true" />
+						</span>
+					</div>
+
+                    <div class="frm-field">
+                        <span class="frm-label">销售日期：</span>
+                        <span class="frm-control">
+							<input type="text" id="saleDate" name="saleDate" class="easyui-datebox" style="width: 180px" required="true" />
+						</span>
+                    </div>
+
+                    <div class="frm-field">
+						<span class="frm-label">媒人：</span>
+						<span class="frm-control">
+							<input type="text" name="matchmaker" style="width: 180px" />
+						</span>
+					</div>
+				</div>
+
+				<div class="frm-container">
+					<div class="frm-field" style="width: 800px;">
+						<span class="frm-label">销售员：</span>
+						<span class="frm-control" style="width: 500px;text-align: left">
+							<textarea id="salePersonDisplay" readonly="readonly" style="width:500px;height: 30px" onclick="openChooseSalePersonDialog()"></textarea>
+						</span>
+						<span class="frm-label" style="text-align: left;padding-left: 10px;">
+							<a href="javascript:openChooseSalePersonDialog()" class="easyui-linkbutton" title="选择销售员" iconCls="icon-search" plain="true"></a>
+						</span>
+					</div>
+				</div>
+
+				<div class="frm-control">
+					<div class="frm-field">
+						<span class="frm-label">&nbsp;</span>
+						<span class="frm-control">
+							<input type="hidden" id="saleNumber" name="saleNumber"/>
+							<input type="hidden" id="goodsJson" name="goodsJson"/>
+							<input type="hidden" id="salePersonsJson" name="salePersonsJson"/>
+							<a href="javascript:saveSaleGoods()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+						</span>
+
+					</div>
+				</div>
 			</form>
 		</fieldset>
 	</div>
 	<div data-options="region:'center'" style="padding: 10px;border: 1px">
-		<table id="dg"  class="easyui-datagrid" style="height：1200px"
+		<table id="dg"  class="easyui-datagrid" style="height: 1200px"
 			fitColumns="true" rownumbers="true" singleSelect="true"
 			 fit="true" toolbar="#tb">
 				<thead>
-					<th field="code" width="30" align="center">商品编码</th>
-					<th field="name" width="150" align="center">商品名称</th>
-					<th field="model" width="50" align="center">型号</th>
-					<th field="unit" width="50" align="center">单位</th>
-					<th field="price" width="50" align="center">单价</th>
+					<th field="model" width="50" align="center">商品型号</th>
+					<th field="size" width="50" align="center">尺寸</th>
 					<th field="num" width="50" align="center">数量</th>
-					<th field="total" width="50" align="right">总金额</th>
+					<th field="price" width="50" align="center">单价</th>
+					<th field="total" width="50" align="center">总金额</th>
+                    <th field="totalCost" width="50" align="center">成本价</th>
 				</thead>
 			</table>
 			
@@ -377,9 +638,7 @@
 				</div>
 			</div>
 	</div>
-	
-	
-	
+
 	<div id="dlg" class="easyui-dialog" style="width: 800px;height: 460px;"
 	closed="true"  data-options="onClose:function(){$('#s_codeOrName').val('');}">
 		<div class="easyui-layout" style="width: 100%;height: 100%">
@@ -407,10 +666,10 @@
 							<th field="code" width="50" align="center">商品编码</th>
 							<th field="name" width="150" align="left">商品名称</th>
 							<th field="model" width="50" align="center">商品型号</th>
-							<th field="unit" width="50" align="center">单位</th>
+							<th field="size" width="50" align="center">尺寸</th>
 							<th field="sellingPrice" width="50" align="right" formatter="formatLastSellingPrice">销售单价</th>
 							<th field="purchasingPrice" width="50" align="right" formatter="formatSellingPrice">成本均价</th>
-							<th field="inventoryQuantity" width="50" align="center">库存数量</th>
+							<!--<th field="inventoryQuantity" width="50" align="center">库存数量</th>-->
 						</thead>
 					</table>
 					
@@ -423,7 +682,7 @@
 		</div>
 	</div>
 	
-	<div id="dlg2" class="easyui-dialog" style="width: 450px;height: 265px;padding: 5px 5px"
+	<div id="dlg2" class="easyui-dialog" style="width: 630px;height: 265px;padding: 5px 5px"
 	closed="true" buttons="#dlg-buttons2" data-options="onClose:function(){resetValue()}">
 		<fieldset style="border-color: #E7F0FF">
 			<legend>商品信息</legend>
@@ -438,26 +697,24 @@
 					<td>
 						<input type="text" id="name" name="name" readonly="readonly" size="10"/>
 					</td>
+                    <td>商品型号：</td>
+                    <td>
+                        <input type="text" id="model" name="model" readonly="readonly" size="10"/>
+                    </td>
 				</tr>
 				<tr>
-					<td>商品型号：</td>
+					<td>商品尺寸：</td>
 					<td>
-						<input type="text" id="model" name="model" readonly="readonly" size="10"/>
+						<input type="text" id="size" name="size" readonly="readonly" size="10"/>
 					</td>
-					<td>商品单位：</td>
-					<td>
-						<input type="text" id="unit" name="unit" readonly="readonly" size="10"/>
-					</td>
-				</tr>
-				<tr>
-					<td>销售单价：</td>
-					<td>
-						<input type="text" id="sellingPrice" name="sellingPrice" readonly="readonly" size="10"/>
-					</td>
-					<td>当年库存：</td>
-					<td>
-						<input type="text" id="inventoryQuantity" name="inventoryQuantity" readonly="readonly" size="10"/>
-					</td>
+                    <td>销售单价：</td>
+                    <td>
+                        <input type="text" id="sellingPrice" name="sellingPrice" readonly="readonly" size="10"/>
+                    </td>
+                    <td>成本价：</td>
+                    <td>
+                        <input type="text" id="purchasingPrice" name="purchasingPrice" readonly="readonly" size="10"/>
+                    </td>
 				</tr>
 			</table>
 		</form>
@@ -472,6 +729,10 @@
 						    <input type="hidden" id="rowIndex"/>
 							<input type="text" id="price" name="price" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>
 						</td>
+                        <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;成本价：</td>
+                        <td>
+                            <input type="text" id="costPrice" name="costPrice" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>
+                        </td>
 						<td align="right" width="60">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：</td>
 						<td>
 							<input type="text" id="num" name="num" class="easyui-numberbox" data-options="min:1" required="true" size="10"/>
@@ -501,5 +762,76 @@
 		<a href="javascript:saveGoodsType()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
 		<a href="javascript:closeGoodsTypeDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
 	</div>
+
+
+	<div id="dlg4" class="easyui-dialog" style="width: 800px;height: 460px;"
+		 closed="true" buttons="#dlg-buttons4" >
+
+		<table id="dg4"  class="easyui-datagrid" style="height: 1200px"
+			   fitColumns="true" rownumbers="true" singleSelect="true"
+			   url="/admin/sale/person/list" fit="true" toolbar="#tb4">
+			<thead>
+				<th field="id" hidden="true">销售员编号</th>
+				<th field="user" width="50" align="left" formatter="formatName">销售员</th>
+				<th data-options="field:'amount', width:50, align:'right', " >总金额</th>
+			</thead>
+		</table>
+
+		<div id="tb4">
+			<div style="padding: 2px">
+				<a href="javascript:openSalePersonAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+				<a href="javascript:deleteSalePerson()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+			</div>
+		</div>
+
+		<div id="dlg-buttons4">
+			<a href="javascript:saveSalePerson()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+			<a href="javascript:closeSalePersonDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+		</div>
+	</div>
+
+	<div id="dlg5" class="easyui-dialog" style="width: 500px;height: 260px;"
+		 closed="true" buttons="#dlg-buttons5" >
+
+		<table id="dg5"  class="easyui-datagrid" style="height: 1200px"
+			   fitColumns="true" rownumbers="true" singleSelect="true"
+			   url="/admin/user/list" pagination="true" fit="true">
+			<thead>
+				<th field="ck" checkbox="true"></th>
+				<th field="id" hidden="true">用户编号</th>
+				<th field="trueName" width="50" align="left" editor="">销售员</th>
+			</thead>
+		</table>
+	</div>
+
+	<div id="dlg-buttons5">
+		<a href="javascript:saveUser()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeUserDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+
+	<div id="dlg6" class="easyui-dialog" style="width: 400px;height: 180px;padding: 20px"
+		 closed="true" buttons="#dlg-buttons6" >
+
+		<fieldset style="border-color: #E7F0FF">
+			<legend>销售金额</legend>
+			<form id="fm5" method="post">
+				<div class="frm-field">
+					<span class="frm-label">金额：</span>
+					<span class="frm-control">
+							<input type="text" id="amount" class="easyui-numberbox easyui-validatebox"
+								   required="true" data-options="min:0,precision:2" />
+						</span>
+				</div>
+			</form>
+		</fieldset>
+
+	</div>
+
+	<div id="dlg-buttons6">
+		<a href="javascript:saveUserAmount()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+		<a href="javascript:closeUserAmountDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+	</div>
+
+
 </body>
 </html>

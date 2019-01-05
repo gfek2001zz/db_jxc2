@@ -1,13 +1,10 @@
 package com.mf.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import java.util.List;
 
 /**
  * 用户实体
@@ -38,6 +35,10 @@ public class User {
 	
 	@Transient
 	private String roles; // 所拥有的角色
+
+	@OneToOne
+	@JoinColumn(name = "shop_id")
+	private Shop shop;
 
 	public Integer getId() {
 		return id;
@@ -85,6 +86,14 @@ public class User {
 
 	public void setRoles(String roles) {
 		this.roles = roles;
+	}
+
+	public Shop getShop() {
+		return shop;
+	}
+
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
 
 	@Override

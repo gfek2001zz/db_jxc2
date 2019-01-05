@@ -2,6 +2,7 @@ package com.mf.service;
 
 import java.util.List;
 
+import com.mf.entity.SaleListPerson;
 import org.springframework.data.domain.Sort.Direction;
 
 import com.mf.entity.SaleList;
@@ -32,7 +33,7 @@ public interface SaleListService {
 	 * @param saleList
 	 * @param saleListGoodsList
 	 */
-	public void save(SaleList saleList,List<SaleListGoods> saleListGoodsList);
+	public void save(SaleList saleList,List<SaleListGoods> saleListGoodsList, List<SaleListPerson> saleListPersonList);
 	
 	/**
 	 * 根据条件查询销售单信息
@@ -41,7 +42,7 @@ public interface SaleListService {
 	 * @param properties
 	 * @return
 	 */
-	public List<SaleList> list(SaleList saleList,Direction direction,String...properties);
+	public List<SaleList> list(SaleList saleList, Integer page, Integer pageSize, Direction direction, String... properties);
 	
 	/**
 	 * 根据id删除销售单信息 包括销售单里的所有商品
@@ -70,4 +71,5 @@ public interface SaleListService {
 	 * @return
 	 */
 	public List<Object> countSaleByMonth(String begin,String end);
+
 }

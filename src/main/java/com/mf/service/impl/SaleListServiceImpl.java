@@ -10,6 +10,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import com.mf.entity.SaleListPerson;
+import com.mf.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,10 +23,6 @@ import org.springframework.stereotype.Service;
 import com.mf.entity.Goods;
 import com.mf.entity.SaleList;
 import com.mf.entity.SaleListGoods;
-import com.mf.repository.GoodsRepository;
-import com.mf.repository.GoodsTypeRepository;
-import com.mf.repository.SaleListGoodsRepository;
-import com.mf.repository.SaleListRepository;
 import com.mf.service.SaleListService;
 import com.mf.util.StringUtil;
 
@@ -45,13 +46,16 @@ public class SaleListServiceImpl implements SaleListService{
 	@Resource
 	private SaleListGoodsRepository saleListGoodsRepository;
 
+	@Resource
+	private SaleListPersonRepository saleListPersonRepository;
+
 	@Override
 	public String getTodayMaxSaleNumber() {
 		return saleListRepository.getTodayMaxSaleNumber();
 	}
 
 	@Transactional
-	public void save(SaleList saleList, List<SaleListGoods> saleListGoodsList) {
+	public void save(SaleList saleList, List<SaleListGoods> saleListGoodsList, List<SaleListPerson> saleListPersonList) {
 		for(SaleListGoods saleListGoods:saleListGoodsList){
 			saleListGoods.setType(goodsTypeRepository.findOne(saleListGoods.getTypeId())); // 设置类别
 			saleListGoods.setSaleList(saleList); // 设置销售单
@@ -62,12 +66,19 @@ public class SaleListServiceImpl implements SaleListService{
 			goods.setState(2);
 			goodsRepository.save(goods);
 		}
+
+		for(SaleListPerson person : saleListPersonList) {
+			person.setSaleList(saleList);
+			saleListPersonRepository.save(person);
+		}
+
 		saleListRepository.save(saleList); // 保存销售单
 	}
 
 	@Override
-	public List<SaleList> list(SaleList saleList, Direction direction, String... properties) {
-		return saleListRepository.findAll(new Specification<SaleList>() {
+	public List<SaleList> list(SaleList saleList, Integer page, Integer pageSize, Direction direction, String... properties) {
+		Pageable pageable=new PageRequest(page-1,pageSize);
+		Page<SaleList> saleLists = saleListRepository.findAll(new Specification<SaleList>() {
 			
 			@Override
 			public Predicate toPredicate(Root<SaleList> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -91,7 +102,9 @@ public class SaleListServiceImpl implements SaleListService{
 				}
 				return predicate;
 			}
-		},new Sort(direction, properties));
+		}, pageable);
+
+		return saleLists.getContent();
 	}
 
 	@Override
