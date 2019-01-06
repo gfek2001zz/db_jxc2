@@ -6,7 +6,6 @@ import com.mf.util.EntityUtil;
 import com.mf.util.SpringContextUtils;
 import com.mf.util.StringUtil;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,7 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,7 +32,7 @@ public class ExcelWriteStream {
         List<SheetMeta> sheetMetas = context.getSheetMetas();
         for (SheetMeta sheetMeta : sheetMetas) {
 
-            List<ColumnMeta> totalColumnMetas = sheetMeta.getColumnMetas();
+            List<ColumnMeta> columnMetas = sheetMeta.getColumnMetas();
 
             Sheet sheet = wb.getSheet(sheetMeta.getName());
             if (null == sheet) {
@@ -40,19 +41,8 @@ public class ExcelWriteStream {
 
             //套用模板则不生成标题行
             if (StringUtil.isEmpty(context.getTemplate())) {
-                createTitleRow(totalColumnMetas, sheetMeta.getTitleRow(), wb, sheet);
+                createTitleRow(columnMetas, sheetMeta.getTitleRow(), wb, sheet);
             }
-
-            //查找所有type为list的column
-            List<ColumnMeta> columnMetaByTypeList = totalColumnMetas.stream()
-                    .filter(columnMeta -> "list".equals(columnMeta.getType()))
-                    .collect(Collectors.toList());
-
-            //查找剩余的column
-            List<ColumnMeta> columnMetas = totalColumnMetas.stream()
-                    .filter(columnMeta -> !"list".equals(columnMeta.getType()))
-                    .collect(Collectors.toList());
-
 
             IExcelExportProvider provider = getExcelExportProvider(sheetMeta.getProviderBean());
             provider.begin(context);
@@ -67,8 +57,8 @@ public class ExcelWriteStream {
 
                 for (int page = 1; page <= totalPage; page ++) {
                     List<?> dataList = provider.batchData(context.getParam(), page, context.getRows());
-
-                    createDataRow(context, sheetMeta, columnMetas, columnMetaByTypeList, dataList, sheet);
+                    createMergedDataRow(sheetMeta, columnMetas, dataList, sheet);
+                    createDetailDateRow(sheetMeta, columnMetas, dataList, sheet);
                 }
             } else {
                 provider.fail(context);
@@ -145,85 +135,89 @@ public class ExcelWriteStream {
      * @param columnMetas
      * @param dataList
      */
-    private void createDataRow(IExcelContext context, SheetMeta sheetMeta, List<ColumnMeta> columnMetas,
-                               List<ColumnMeta> columnMetaByTypeList, List<?> dataList, Sheet sheet) {
+    private void createDetailDateRow(SheetMeta sheetMeta, List<ColumnMeta> columnMetas, List<?> dataList, Sheet sheet) {
         int rowIdx = sheetMeta.getDataRow() - 1;
 
         for (Object obj : dataList) {
-            Row row = sheet.createRow(rowIdx);
 
-            if (CollectionUtils.isNotEmpty(columnMetaByTypeList)) {
-                List<?> entityObj = EntityUtil.getProperty(obj, columnMetaByTypeList.get(0).getEntityBean());
-                columnMetaByTypeList.stream().forEach(columnMeta -> setExcelData(context, sheet, row, columnMeta, entityObj));
-                columnMetas.stream().forEach(columnMeta -> setExcelRegionData(context, sheet, row, entityObj.size() - 1, columnMeta, obj));
+            List<ColumnMeta> columnMetasList = columnMetas.stream()
+                    .filter(columnMeta -> "list".equals(columnMeta.getType())).collect(Collectors.toList());
 
-            } else {
-                columnMetas.stream().forEach(columnMeta -> setExcelRegionData(context, sheet, row, 0, columnMeta, obj));
-            }
+            if (null != columnMetasList) {
+                List<?> entityObj = EntityUtil.getProperty(obj, columnMetasList.get(0).getEntityBean());
 
+                for (Object entity : entityObj) {
+                    Row row = sheet.getRow(rowIdx);
+                    if (null == row) {
+                        row = sheet.createRow(rowIdx);
+                    }
 
-            rowIdx ++;
-        }
-    }
+                    for (ColumnMeta columnMeta : columnMetasList) {
+                        int colIdx = columnMeta.getColIdx();
+                        Cell cell = row.createCell(colIdx);
 
-    /**
-     * 根据regionSize合并单元格
-     * @param sheet
-     * @param row
-     * @param mergedSize
-     * @param columnMeta
-     * @param obj
-     */
-    private void setExcelRegionData(IExcelContext context, Sheet sheet, Row row, int mergedSize, ColumnMeta columnMeta, Object obj) {
-        if (mergedSize > 0) {
-            sheet.addMergedRegion(new CellRangeAddress(0, mergedSize, columnMeta.getColIdx(), columnMeta.getColIdx()));
-        }
+                        try {
+                            cell.setCellValue(BeanUtils.getProperty(entity, columnMeta.getFieldName()));
+                            if (columnMeta.getWidth() != null && columnMeta.getWidth() > 0) {
+                                sheet.setColumnWidth(columnMeta.getColIdx(), columnMeta.getWidth() * 256);
+                            }
+                        } catch (Exception ex) {
+                            logger.error(ex.getMessage(), ex);
+                        }
+                    }
 
-        setExcelData(context, sheet, row, columnMeta, obj);
-    }
-
-    /**
-     * type为list的column直接逐行写入
-     * @param sheet
-     * @param row
-     * @param columnMeta
-     * @param entityObj
-     */
-    private void setExcelData(IExcelContext context, Sheet sheet, Row row, ColumnMeta columnMeta, List<?> entityObj) {
-        try {
-            int colIdx = columnMeta.getColIdx();
-            if (StringUtil.isNotEmpty(context.getTemplate())) {
-                colIdx += 1;
-            }
-
-            Cell cell = row.createCell(colIdx);
-            for (Object obj : entityObj) {
-                cell.setCellValue(BeanUtils.getProperty(obj, columnMeta.getFieldName()));
-                if (columnMeta.getWidth() != null && columnMeta.getWidth() > 0) {
-                    sheet.setColumnWidth(columnMeta.getColIdx(), columnMeta.getWidth() * 256);
+                    rowIdx ++;
                 }
             }
 
-        } catch (Exception ex) {
-            logger.error(ex.getMessage(), ex);
         }
     }
 
-    /**
-     * type为list的column直接逐行写入
-     * @param sheet
-     * @param row
-     * @param columnMeta
-     * @param obj
-     */
-    private void setExcelData(IExcelContext context, Sheet sheet, Row row, ColumnMeta columnMeta, Object obj) {
-        try {
-            int colIdx = columnMeta.getColIdx();
-            if (StringUtil.isNotEmpty(context.getTemplate())) {
-                colIdx += 1;
+
+    private void createMergedDataRow(SheetMeta sheetMeta, List<ColumnMeta> columnMetas, List<?> dataList, Sheet sheet) {
+        int rowIdx = sheetMeta.getDataRow() - 1;
+
+        List<?> entityObj = new ArrayList<>();
+        Optional<ColumnMeta> columnMetaOptional = columnMetas.stream()
+                .filter(columnMeta -> "list".equals(columnMeta.getType())).findFirst();
+
+        for (Object obj : dataList) {
+            Row row = sheet.getRow(rowIdx);
+            if (null == row) {
+                row = sheet.createRow(rowIdx);
             }
 
-            Cell cell = row.createCell(colIdx);
+            if (columnMetaOptional.isPresent()) {
+                entityObj = EntityUtil.getProperty(obj, columnMetaOptional.get().getEntityBean());
+            }
+
+            int mergedSize = 0;
+            if (entityObj.size() > 0) {
+                mergedSize = entityObj.size() - 1;
+            }
+
+            int finalMergedSize = mergedSize;
+            int finalRowIdx = rowIdx;
+            Row finalRow = row;
+            columnMetas.stream().filter(columnMeta -> !"list".equals(columnMeta.getType()))
+                    .forEach(columnMeta -> setExcelCellData(sheet, finalRow, finalMergedSize, finalRowIdx, columnMeta, obj));
+
+            rowIdx += mergedSize + 1;
+        }
+    }
+
+    private void setExcelCellData(Sheet sheet, Row row, int mergedSize, int rowIdx, ColumnMeta columnMeta, Object obj){
+        if (mergedSize > 0) {
+            sheet.addMergedRegion(new CellRangeAddress(rowIdx, rowIdx + mergedSize, columnMeta.getColIdx(), columnMeta.getColIdx()));
+        }
+
+        try {
+            int colIdx = columnMeta.getColIdx();
+            Cell cell = row.getCell(colIdx);
+            if (null == cell) {
+                cell = row.createCell(colIdx);
+            }
+
             if (StringUtil.isNotEmpty(columnMeta.getEntityBean())) {
                 obj = EntityUtil.getProperty(obj, columnMeta.getEntityBean());
             }
@@ -236,6 +230,7 @@ public class ExcelWriteStream {
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
+
     }
 
 

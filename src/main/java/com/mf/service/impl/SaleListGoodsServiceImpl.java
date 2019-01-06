@@ -52,6 +52,9 @@ public class SaleListGoodsServiceImpl implements SaleListGoodsService{
 					if(StringUtil.isNotEmpty(saleListGoods.getCodeOrName())){
 						predicate.getExpressions().add(cb.or(cb.like(root.get("code"), "%"+saleListGoods.getCodeOrName()+"%"), cb.like(root.get("name"), "%"+saleListGoods.getCodeOrName()+"%")));
 					}
+					if(saleListGoods.getSaleList().getId() != null) {
+						predicate.getExpressions().add(cb.equal(root.get("saleList").get("id"), saleListGoods.getSaleList().getId()));
+					}
 				}
 				return predicate;
 			}
