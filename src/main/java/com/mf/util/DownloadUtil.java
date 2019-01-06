@@ -1,11 +1,11 @@
 package com.mf.util;
 
-import com.sun.deploy.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 
 public class DownloadUtil {
     private static final Logger logger = LoggerFactory.getLogger(DownloadUtil.class);
