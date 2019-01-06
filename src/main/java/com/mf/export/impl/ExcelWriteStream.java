@@ -274,6 +274,7 @@ public class ExcelWriteStream {
             cell.setCellStyle(cellStyle);
         } else {
             cell.setCellValue(BeanUtils.getProperty(obj, columnMeta.getFieldName()));
+            cell.setCellStyle(cellStyle);
         }
     }
 
