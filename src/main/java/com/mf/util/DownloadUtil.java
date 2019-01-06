@@ -1,6 +1,5 @@
 package com.mf.util;
 
-import com.sun.deploy.net.HttpResponse;
 import com.sun.deploy.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
