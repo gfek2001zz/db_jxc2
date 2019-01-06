@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<excel name="销售日报表" rows="100" template="sale_template.xlsx">
+    <sheet name="销售日报表" titleRow="3" dataRow="4" providerBean="saleListExportProvider">
+        <column fieldName="id" type="string" width="20">序列</column>
+        <column fieldName="saleMonth" type="string" width="20">月</column>
+        <column fieldName="saleDay" type="string" width="20">日</column>
+        <column fieldName="name" entityBean="shop" type="string" width="20">门店</column>
+        <column fieldName="name" type="string" entityBean="customer" width="20">客户</column>
+        <column fieldName="contractNumber" type="string" width="20">合同号</column>
+        <column fieldName="amountPayable" type="string" width="20">销售金额</column>
+        <column fieldName="amountPaid" type="string" width="20">实收全款</column>
+        <column fieldName="amountEarnest" type="string" width="20">实收定金</column>
+        <column fieldName="amountFinalPayment" type="string" width="20">待收余额</column>
+        <column fieldName="address" entityBean="customer" type="string" width="20">地址</column>
+        <column fieldName="contact" entityBean="customer" type="string" width="20">电话</column>
+
+        <column fieldName="model" entityBean="saleListGoodsList" type="list" width="20">型号</column>
+        <column fieldName="size" entityBean="saleListGoodsList" type="list" width="20">尺寸</column>
+        <column fieldName="num" entityBean="saleListGoodsList" type="list" width="20">数量</column>
+        <column fieldName="totalCost" entityBean="saleListGoodsList" type="list" width="20">成本</column>
+
+        <column fieldName="grossProfit" type="string" width="20">毛利</column>
+        <column fieldName="grossProfitRate" type="string" width="20">毛利率</column>
+        <column fieldName="name" entityBean="card" type="string" width="20">款项去向</column>
+        <column fieldName="factoryDate" type="string" width="20">工厂下单时间</column>
+        <column fieldName="deliveryDate" type="string" width="20">送货时间</column>
+        <column fieldName="matchmaker" type="string" width="20">媒人</column>
+        <column fieldName="trueName" entityBean="user" type="string" width="20">制单人员</column>
+    </sheet>
+</excel>

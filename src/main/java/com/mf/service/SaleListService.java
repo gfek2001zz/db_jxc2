@@ -44,6 +44,9 @@ public interface SaleListService {
 	 */
 	public List<SaleList> list(SaleList saleList, Integer page, Integer pageSize, Direction direction, String... properties);
 	
+
+	Long getCount(SaleList saleList);
+
 	/**
 	 * 根据id删除销售单信息 包括销售单里的所有商品
 	 * @param id

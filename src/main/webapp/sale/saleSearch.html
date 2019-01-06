@@ -125,6 +125,36 @@
 	        return val.trueName;
 		}
 	}
+
+	function exportSale() {
+        var exportUrl = '/admin/saleList/export';
+
+        var customerId;
+        if(isNaN($("#s_customer").combobox("getValue"))){
+            customerId="";
+        }else{
+            customerId=$("#s_customer").combobox("getValue");
+        }
+
+        var searchObj = {
+            saleNumber:$("#s_saleNumber").val(),
+            "customer.id":customerId,
+            state:$("#s_state").combobox("getValue"),
+            bSaleDate:$("#s_bSaleDate").datebox("getValue"),
+            eSaleDate:$("#s_eSaleDate").datebox("getValue")
+        };
+
+        var form = $('<form method="POST" action="' + exportUrl + '">');
+        $.each(searchObj, function(k, v) {
+            form.append($('<input type="hidden" name="' + k +
+                '" value="' + v + '">'));
+        });
+
+        $('body').append(form);
+        form.submit();
+
+        form.remove();
+    }
 </script>
 </head>
 <body class="easyui-layout" style="margin: 1px">
@@ -175,6 +205,7 @@
 			<input id="s_eSaleDate" class="easyui-datebox" editable=false style="width:100px"/>
 			&nbsp;&nbsp;<a href="javascript:searchSale()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
 			&nbsp;&nbsp;<a href="javascript:deleteSale()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+			&nbsp;&nbsp;<a href="javascript:exportSale()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
 		</fieldset>
 	</div>
  </div>
@@ -183,14 +214,6 @@
 		fitColumns="true"  rownumbers="true" singleSelect="true"
 		 fit="true" >
 			<thead>
-				<!--<th field="code" width="30" align="center">商品编码</th>-->
-				<!--<th field="name" width="150" align="center">商品名称</th>-->
-				<!--<th field="model" width="50" align="center">商品型号</th>-->
-				<!--<th field="price" width="50" align="right" formatter="formatPrice">单价</th>-->
-				<!--<th field="num" width="50" align="center">数量</th>-->
-				<!--<th field="unit" width="50" align="center">单位</th>-->
-				<!--<th field="total" width="50" align="right" formatter="formatTotal">总金额</th>-->
-
 				<th field="model" width="50" align="center">商品型号</th>
 				<th field="size" width="50" align="center">尺寸</th>
 				<th field="num" width="50" align="center">数量</th>

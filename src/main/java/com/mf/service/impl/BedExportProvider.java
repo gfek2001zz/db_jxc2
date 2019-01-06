@@ -3,7 +3,7 @@ package com.mf.service.impl;
 import com.mf.entity.Goods;
 import com.mf.entity.GoodsType;
 import com.mf.export.IExcelContext;
-import com.mf.export.IExcelExportConsumer;
+import com.mf.export.IExcelExportProvider;
 import com.mf.service.GoodsService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -12,22 +12,25 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("mattressExportConsumer")
-public class MattressExportConsumer implements IExcelExportConsumer {
+@Component("bedExportProvider")
+public class BedExportProvider implements IExcelExportProvider {
     @Resource
     private GoodsService goodsService;
+
 
     @Override
     public void begin(IExcelContext context) {
 
-    } @Override
+    }
+
+    @Override
     public Long getCount(Object obj) {
         Long resultCnt = 0L;
 
         if (obj != null) {
             Goods goods = (Goods) obj;
             GoodsType type = new GoodsType();
-            type.setId(23);
+            type.setId(24);
             goods.setType(type);
 
             resultCnt = goodsService.getCount(goods);
@@ -43,7 +46,7 @@ public class MattressExportConsumer implements IExcelExportConsumer {
         if (obj != null) {
             Goods goods = (Goods) obj;
             GoodsType type = new GoodsType();
-            type.setId(23);
+            type.setId(24);
             goods.setType(type);
 
             resultVOs = goodsService.list(goods, page, rows, Sort.Direction.ASC, "id");

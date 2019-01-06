@@ -1,5 +1,6 @@
 package com.mf.controller.admin;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import com.mf.entity.*;
+import com.mf.export.impl.ExcelExportTask;
 import com.mf.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
@@ -51,6 +54,9 @@ public class SaleListAdminController {
 	
 	@Resource
 	private LogService logService;
+
+	@Resource
+	private ExcelExportTask excelExportTask;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -276,4 +282,13 @@ public class SaleListAdminController {
 		resultMap.put("success", true);
 		return resultMap;
 	}
+
+
+	@RequestMapping("/export")
+	@RequiresPermissions(value = "销售单据查询")
+	public void export(SaleList saleList, HttpServletResponse httpResponse)
+			throws Exception {
+		File excelFile = excelExportTask.startExport("sale", saleList);
+	}
+
 }

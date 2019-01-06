@@ -1,11 +1,13 @@
 package com.mf.entity;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mf.util.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -90,6 +92,13 @@ public class SaleList {
 
     @Transient
     private Float grossProfitRate;
+
+    @Transient
+	private String saleMonth;
+
+
+    @Transient
+	private String saleDay;
 
 	public Integer getId() {
 		return id;
@@ -308,7 +317,36 @@ public class SaleList {
         this.grossProfitRate = grossProfitRate;
     }
 
-    @Override
+	public String getSaleMonth() {
+
+		if (saleMonth == null) {
+			Date date = getSaleDate();
+			SimpleDateFormat format = new SimpleDateFormat("MM");
+			saleMonth = format.format(date);
+		}
+
+		return saleMonth;
+	}
+
+	public void setSaleMonth(String saleMonth) {
+		this.saleMonth = saleMonth;
+	}
+
+	public String getSaleDay() {
+		if (saleDay == null) {
+			Date date = getSaleDate();
+			SimpleDateFormat format = new SimpleDateFormat("dd");
+			saleDay = format.format(date);
+		}
+
+		return saleDay;
+	}
+
+	public void setSaleDay(String saleDay) {
+		this.saleDay = saleDay;
+	}
+
+	@Override
 	public String toString() {
 		return "SaleList [id=" + id + ", saleNumber=" + saleNumber + ", customer=" + customer
 				+ ", saleDate=" + saleDate + ", amountPayable=" + amountPayable + ", amountPaid=" + amountPaid

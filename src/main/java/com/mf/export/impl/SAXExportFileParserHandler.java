@@ -24,6 +24,8 @@ public class SAXExportFileParserHandler extends DefaultHandler {
 
     private final ExcelContext context;
 
+    private Integer colIdx = 0;
+
     public SAXExportFileParserHandler(ExcelContext context) {
         this.context = context;
     }
@@ -54,12 +56,16 @@ public class SAXExportFileParserHandler extends DefaultHandler {
         logger.debug("qName:" + qName);
 
         if ("sheet".equals(qName)) {
+            colIdx = 0;
             sheetMeta = new SheetMeta();
             parseXML2Entity(sheetMeta, attributes);
 
         } else if ("column".equals(qName)) {
             columnMeta = new ColumnMeta();
             parseXML2Entity(columnMeta, attributes);
+
+            columnMeta.setColIdx(colIdx);
+            colIdx = colIdx + 1;
         } else if ("excel".equals(qName)) {
             int attrNum = attributes.getLength();
             for (int i = 0; i < attrNum; i ++) {
@@ -73,6 +79,8 @@ public class SAXExportFileParserHandler extends DefaultHandler {
                     context.setFileName(fileName);
                 } else if("rows".equals(attrName)) {
                     context.setRows(Integer.valueOf(attributes.getValue(i)));
+                } else if("template".equals(attrName)) {
+                    context.setTemplate(attributes.getValue(i));
                 }
             }
         }

@@ -79,32 +79,47 @@ public class SaleListServiceImpl implements SaleListService{
 	public List<SaleList> list(SaleList saleList, Integer page, Integer pageSize, Direction direction, String... properties) {
 		Pageable pageable=new PageRequest(page-1,pageSize);
 		Page<SaleList> saleLists = saleListRepository.findAll(new Specification<SaleList>() {
-			
+
 			@Override
 			public Predicate toPredicate(Root<SaleList> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-				Predicate predicate=cb.conjunction();
-				if(saleList!=null){
-					if(StringUtil.isNotEmpty(saleList.getSaleNumber())){
-						predicate.getExpressions().add(cb.like(root.get("saleNumber"), "%"+saleList.getSaleNumber().trim()+"%"));
-					}
-					if(saleList.getCustomer()!=null && saleList.getCustomer().getId()!=null){
-						predicate.getExpressions().add(cb.equal(root.get("customer").get("id"), saleList.getCustomer().getId()));
-					}
-					if(saleList.getState()!=null){
-						predicate.getExpressions().add(cb.equal(root.get("state"), saleList.getState()));
-					}
-					if(saleList.getbSaleDate()!=null){
-						predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get("saleDate"), saleList.getbSaleDate()));
-					}
-					if(saleList.geteSaleDate()!=null){
-						predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get("saleDate"), saleList.geteSaleDate()));
-					}
-				}
-				return predicate;
+				return getPredicate(root, cb, saleList);
 			}
 		}, pageable);
 
 		return saleLists.getContent();
+	}
+
+	public Long getCount(SaleList saleList) {
+		return saleListRepository.count(new Specification<SaleList>() {
+
+			@Override
+			public Predicate toPredicate(Root<SaleList> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				return getPredicate(root, cb, saleList);
+			}
+		});
+	}
+
+	private Predicate getPredicate(Root<SaleList> root, CriteriaBuilder cb, SaleList saleList) {
+		Predicate predicate=cb.conjunction();
+		if(saleList!=null){
+			if(StringUtil.isNotEmpty(saleList.getSaleNumber())){
+				predicate.getExpressions().add(cb.like(root.get("saleNumber"), "%"+saleList.getSaleNumber().trim()+"%"));
+			}
+			if(saleList.getCustomer()!=null && saleList.getCustomer().getId()!=null){
+				predicate.getExpressions().add(cb.equal(root.get("customer").get("id"), saleList.getCustomer().getId()));
+			}
+			if(saleList.getState()!=null){
+				predicate.getExpressions().add(cb.equal(root.get("state"), saleList.getState()));
+			}
+			if(saleList.getbSaleDate()!=null){
+				predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get("saleDate"), saleList.getbSaleDate()));
+			}
+			if(saleList.geteSaleDate()!=null){
+				predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get("saleDate"), saleList.geteSaleDate()));
+			}
+		}
+
+		return predicate;
 	}
 
 	@Override

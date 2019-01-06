@@ -15,6 +15,8 @@ public class ExcelContext implements IExcelContext {
 
     private String xmlFileName;
 
+    private String template;
+
     private Integer page = 1;
 
     private Integer rows = 100;
@@ -75,5 +77,13 @@ public class ExcelContext implements IExcelContext {
 
     public void setParam(Object param) {
         this.param = param;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }

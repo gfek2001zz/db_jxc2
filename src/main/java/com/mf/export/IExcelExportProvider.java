@@ -2,7 +2,7 @@ package com.mf.export;
 
 import java.util.List;
 
-public interface IExcelExportConsumer {
+public interface IExcelExportProvider {
 
     void begin(IExcelContext context);
 

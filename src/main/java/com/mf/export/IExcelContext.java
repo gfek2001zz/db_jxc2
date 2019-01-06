@@ -19,4 +19,6 @@ public interface IExcelContext {
     Integer getRows();
 
     Object getParam();
+
+    String getTemplate();
 }

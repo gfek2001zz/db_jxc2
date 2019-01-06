@@ -11,6 +11,10 @@ public class ColumnMeta {
 
     private Integer width;
 
+    private String entityBean;
+
+    private Integer colIdx;
+
     public String getFieldName() {
         return fieldName;
     }
@@ -41,5 +45,21 @@ public class ColumnMeta {
 
     public void setWidth(Integer width) {
         this.width = width;
+    }
+
+    public Integer getColIdx() {
+        return colIdx;
+    }
+
+    public void setColIdx(Integer colIdx) {
+        this.colIdx = colIdx;
+    }
+
+    public String getEntityBean() {
+        return entityBean;
+    }
+
+    public void setEntityBean(String entityBean) {
+        this.entityBean = entityBean;
     }
 }
