@@ -6,13 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mf.export.impl.ExcelExportTask;
 import com.mf.util.DownloadUtil;
-import com.sun.deploy.net.HttpResponse;
-import com.sun.deploy.net.URLEncoder;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
