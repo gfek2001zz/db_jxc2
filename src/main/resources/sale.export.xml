@@ -19,8 +19,8 @@
         <column fieldName="num" entityBean="saleListGoodsList" type="list">数量</column>
         <column fieldName="totalCost" entityBean="saleListGoodsList" type="list">成本</column>
 
-        <column fieldName="grossProfit" type="string">毛利</column>
-        <column fieldName="grossProfitRate" type="string">毛利率</column>
+        <column fieldName="grossProfit" type="number">毛利</column>
+        <column fieldName="grossProfitRate" type="rate">毛利率</column>
         <column fieldName="name" entityBean="card" type="string">款项去向</column>
         <column fieldName="saleListPerson" type="string">销售员</column>
         <column fieldName="factoryDate" type="date">工厂下单时间</column>

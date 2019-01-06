@@ -7,8 +7,11 @@ import com.mf.util.SpringContextUtils;
 import com.mf.util.StringUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -158,10 +163,11 @@ public class ExcelWriteStream {
                         Cell cell = row.createCell(colIdx);
 
                         try {
-                            cell.setCellValue(BeanUtils.getProperty(entity, columnMeta.getFieldName()));
+                            setExcelCellValue(sheet, cell, columnMeta, entity);
                             if (columnMeta.getWidth() != null && columnMeta.getWidth() > 0) {
-                                sheet.setColumnWidth(columnMeta.getColIdx(), columnMeta.getWidth() * 256);
+                                sheet.setColumnWidth(colIdx, columnMeta.getWidth() * 256);
                             }
+
                         } catch (Exception ex) {
                             logger.error(ex.getMessage(), ex);
                         }
@@ -223,15 +229,55 @@ public class ExcelWriteStream {
                 obj = EntityUtil.getProperty(obj, columnMeta.getEntityBean());
             }
 
-            cell.setCellValue(BeanUtils.getProperty(obj, columnMeta.getFieldName()));
+            setExcelCellValue(sheet, cell, columnMeta, obj);
             if (columnMeta.getWidth() != null && columnMeta.getWidth() > 0) {
-                sheet.setColumnWidth(columnMeta.getColIdx(), columnMeta.getWidth() * 256);
+                sheet.setColumnWidth(colIdx, columnMeta.getWidth() * 256);
             }
+
 
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         }
 
+    }
+
+    private void setExcelCellValue(Sheet sheet, Cell cell, ColumnMeta columnMeta, Object obj)
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        Workbook wb = sheet.getWorkbook();
+        CellStyle cellStyle =  wb.createCellStyle();
+        DataFormat format =  wb.createDataFormat();
+
+        cellStyle.setBorderTop(BorderStyle.THIN);
+        cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderLeft(BorderStyle.THIN);
+        cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderRight(BorderStyle.THIN);
+        cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+
+
+        if ("number".equals(columnMeta.getType())) {
+            Float cellValue = EntityUtil.getProperty(obj, columnMeta.getFieldName());
+            cell.setCellValue(cellValue);
+            cellStyle.setDataFormat(format.getFormat("0.00"));
+            cell.setCellStyle(cellStyle);
+
+        } else if ("date".equals(columnMeta.getType())){
+            Date cellValue = EntityUtil.getProperty(obj, columnMeta.getFieldName());
+            cell.setCellValue(cellValue);
+            cellStyle.setDataFormat(format.getFormat("yyyy/MM/dd"));
+            cell.setCellStyle(cellStyle);
+
+        } else if ("rate".equals(columnMeta.getType())) {
+            Float cellValue = EntityUtil.getProperty(obj, columnMeta.getFieldName());
+            cell.setCellValue(cellValue);
+
+            cellStyle.setDataFormat(format.getFormat("0.00"));
+            cell.setCellStyle(cellStyle);
+        } else {
+            cell.setCellValue(BeanUtils.getProperty(obj, columnMeta.getFieldName()));
+        }
     }
 
 
