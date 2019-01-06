@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.mf.entity.*;
 import com.mf.export.impl.ExcelExportTask;
 import com.mf.service.*;
+import com.mf.util.DownloadUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -289,6 +290,8 @@ public class SaleListAdminController {
 	public void export(SaleList saleList, HttpServletResponse httpResponse)
 			throws Exception {
 		File excelFile = excelExportTask.startExport("sale", saleList);
+
+		DownloadUtil.response(excelFile, httpResponse);
 	}
 
 }

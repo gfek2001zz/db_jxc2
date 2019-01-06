@@ -2,9 +2,11 @@ package com.mf.service.impl;
 
 import com.mf.entity.SaleList;
 import com.mf.entity.SaleListGoods;
+import com.mf.entity.SaleListPerson;
 import com.mf.export.IExcelContext;
 import com.mf.export.IExcelExportProvider;
 import com.mf.service.SaleListGoodsService;
+import com.mf.service.SaleListPersonService;
 import com.mf.service.SaleListService;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ public class SaleListExportProvider implements IExcelExportProvider {
     private SaleListService saleListService;
     @Resource
     private SaleListGoodsService saleListGoodsService;
+    @Resource
+    private SaleListPersonService saleListPersonService;
 
 
     @Override
@@ -54,6 +58,16 @@ public class SaleListExportProvider implements IExcelExportProvider {
 
             List<SaleListGoods> slgList=saleListGoodsService.list(saleListGoods);
             sl.setSaleListGoodsList(slgList);
+
+            List<SaleListPerson> saleListPeople = saleListPersonService.findListBySaleListId(sl);
+
+            StringBuffer buffer = new StringBuffer();
+            for (SaleListPerson saleListPerson : saleListPeople) {
+                buffer.append(saleListPerson.getUser().getTrueName()).append(":")
+                        .append(saleListPerson.getAmount() * 100 / 100.0F).append(";");
+            }
+
+            sl.setSaleListPerson(buffer.toString());
         }
 
         return saleListList;

@@ -22,7 +22,7 @@
         <column fieldName="grossProfit" type="string">毛利</column>
         <column fieldName="grossProfitRate" type="string">毛利率</column>
         <column fieldName="name" entityBean="card" type="string">款项去向</column>
-        <column fieldName="salePersonStr" type="string">销售员</column>
+        <column fieldName="saleListPerson" type="string">销售员</column>
         <column fieldName="factoryDate" type="date">工厂下单时间</column>
         <column fieldName="deliveryDate" type="date">送货时间</column>
         <column fieldName="matchmaker" type="string">媒人</column>

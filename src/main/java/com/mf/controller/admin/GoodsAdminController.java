@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.mf.export.impl.ExcelExportTask;
+import com.mf.util.DownloadUtil;
 import com.sun.deploy.net.HttpResponse;
 import com.sun.deploy.net.URLEncoder;
 import org.apache.shiro.authz.annotation.Logical;
@@ -278,45 +279,7 @@ public class GoodsAdminController {
             throws Exception {
 		File excelFile = excelExportTask.startExport("goods", goods);
 
-        if (excelFile.exists()) {
-            httpResponse.setHeader("content-type", "application/octet-stream");
-            httpResponse.setContentType("application/octet-stream");
-            httpResponse.setHeader("Content-Disposition", "attachment;filename=" +
-                    URLEncoder.encode(excelFile.getName(), "UTF-8"));
-
-            byte[] buffer = new byte[1024];
-            FileInputStream fis = null;
-            BufferedInputStream bis = null;
-            try {
-                fis = new FileInputStream(excelFile);
-                bis = new BufferedInputStream(fis);
-
-                OutputStream os = httpResponse.getOutputStream();
-                int i = bis.read(buffer);
-                while (i != -1) {
-                    os.write(buffer, 0, i);
-                    os.flush();
-                    i = bis.read(buffer);
-                }
-            } catch (Exception ex) {
-                logger.error(ex.getMessage(), ex);
-            } finally {
-                if (bis != null) {
-                    try {
-                        bis.close();
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-        }
+		DownloadUtil.response(excelFile, httpResponse);
 	}
 
 }
