@@ -6,6 +6,7 @@ import com.mf.util.EntityUtil;
 import com.mf.util.SpringContextUtils;
 import com.mf.util.StringUtil;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -143,7 +144,7 @@ public class ExcelWriteStream {
             List<ColumnMeta> columnMetasList = columnMetas.stream()
                     .filter(columnMeta -> "list".equals(columnMeta.getType())).collect(Collectors.toList());
 
-            if (null != columnMetasList) {
+            if (CollectionUtils.isNotEmpty(columnMetasList)) {
                 List<?> entityObj = EntityUtil.getProperty(obj, columnMetasList.get(0).getEntityBean());
 
                 for (Object entity : entityObj) {
