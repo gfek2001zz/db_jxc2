@@ -538,7 +538,7 @@
 						<span class="frm-label">实付金额：</span>
 						<span class="frm-control">
 							<input type="text" id="amountPaid" name="amountPaid"
-                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+                                   class="easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 
@@ -546,7 +546,7 @@
 						<span class="frm-label">实收定金：</span>
 						<span class="frm-control">
 							<input type="text" id="amountEarnest" name="amountEarnest"
-                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+                                   class="easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 
@@ -554,7 +554,7 @@
 						<span class="frm-label">实收尾款：</span>
 						<span class="frm-control">
 							<input type="text" id="amountFinalPayment" name="amountFinalPayment"
-                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+                                   class="easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 				</div>
@@ -626,7 +626,7 @@
 					<th field="num" width="50" align="center">数量</th>
 					<th field="price" width="50" align="center">单价</th>
 					<th field="total" width="50" align="center">总金额</th>
-                    <th field="totalCost" width="50" align="center">成本价</th>
+                    <th field="totalCost" hidden="true" width="50" align="center">成本价</th>
 				</thead>
 			</table>
 			
@@ -668,7 +668,7 @@
 							<th field="model" width="50" align="center">商品型号</th>
 							<th field="size" width="50" align="center">尺寸</th>
 							<th field="sellingPrice" width="50" align="right" formatter="formatLastSellingPrice">销售单价</th>
-							<th field="purchasingPrice" width="50" align="right" formatter="formatSellingPrice">成本均价</th>
+							<th field="purchasingPrice" width="50" hidden="true" align="right" formatter="formatSellingPrice">成本均价</th>
 							<!--<th field="inventoryQuantity" width="50" align="center">库存数量</th>-->
 						</thead>
 					</table>
