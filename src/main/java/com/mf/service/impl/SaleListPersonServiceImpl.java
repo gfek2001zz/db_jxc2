@@ -20,4 +20,9 @@ public class SaleListPersonServiceImpl implements SaleListPersonService {
     public List<SaleListPerson> findListBySaleListId(SaleList saleList) {
         return saleListPersonRepository.findListBySaleListId(saleList.getId());
     }
+
+    @Override
+    public void delete(Integer saleId) {
+        saleListPersonRepository.deleteBySaleListId(saleId);
+    }
 }

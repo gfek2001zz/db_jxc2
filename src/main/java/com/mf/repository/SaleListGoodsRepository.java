@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.mf.entity.SaleListGoods;
 
+import javax.transaction.Transactional;
+
 /**
  * 销售单商品Repository接口
  * @author Administrator
@@ -29,6 +31,7 @@ public interface SaleListGoodsRepository extends JpaRepository<SaleListGoods, In
 	 * @param saleListId
 	 * @return
 	 */
+	@Transactional
 	@Query(value="delete FROM t_sale_list_goods WHERE sale_list_id=?1",nativeQuery=true)
 	@Modifying
 	public void deleteBySaleListId(Integer saleListId);

@@ -10,7 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
-import com.mf.entity.SaleListPerson;
+import com.mf.entity.*;
 import com.mf.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,9 +20,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.mf.entity.Goods;
-import com.mf.entity.SaleList;
-import com.mf.entity.SaleListGoods;
 import com.mf.service.SaleListService;
 import com.mf.util.StringUtil;
 
@@ -48,6 +45,9 @@ public class SaleListServiceImpl implements SaleListService{
 
 	@Resource
 	private SaleListPersonRepository saleListPersonRepository;
+
+	@Resource
+	private SaleListPaymentRepository saleListPaymentRepository;
 
 	@Override
 	public String getTodayMaxSaleNumber() {
@@ -86,7 +86,19 @@ public class SaleListServiceImpl implements SaleListService{
 			}
 		}, pageable);
 
-		return saleLists.getContent();
+		List<SaleList> result = saleLists.getContent();
+		for (SaleList saleList1 : result) {
+			Float amountPayment = saleListPaymentRepository.findPaymentAmountBySaleListId(saleList1.getId());
+			if (null == amountPayment) {
+				amountPayment = 0F;
+			}
+
+			saleList1.setAmountBalance(saleList1.getAmountEarnest() + amountPayment);
+			saleList1.setAmountFinalPayment(saleList1.getAmountPaid() - saleList1.getAmountBalance());
+			saleList1.setAmountDiscount(saleList1.getAmountPayable() - saleList1.getAmountPaid());
+		}
+
+		return result;
 	}
 
 	public Long getCount(SaleList saleList) {

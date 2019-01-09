@@ -49,6 +49,9 @@ public class SaleListAdminController {
 
 	@Resource
     private SaleListPersonService saleListPersonService;
+
+	@Resource
+    private SaleListPaymentService saleListPaymentService;
 	
 	@Resource
 	private UserService userService;
@@ -185,6 +188,11 @@ public class SaleListAdminController {
 	@RequiresPermissions(value="销售单据查询")
 	public Map<String,Object> delete(Integer id)throws Exception{
 		Map<String,Object> resultMap=new HashMap<>();
+
+		saleListGoodsService.delete(id);
+		saleListPersonService.delete(id);
+		saleListPaymentService.delete(id);
+
 		saleListService.delete(id);
 		logService.save(new Log(Log.DELETE_ACTION,"删除销售单信息："+saleListService.findById(id)));
 		resultMap.put("success", true);
@@ -205,6 +213,20 @@ public class SaleListAdminController {
 		saleList.setState(1);
 		saleListService.update(saleList);
 		resultMap.put("success", true);
+		return resultMap;
+	}
+
+
+	@RequestMapping("/updateAmount")
+	@RequiresPermissions(value = "销售单据查询")
+	public Map<String,Object> updateAmount(SaleListPayment saleListPayment)throws Exception{
+		Map<String,Object> resultMap=new HashMap<>();
+        if (saleListPaymentService.add(saleListPayment)) {
+            resultMap.put("success", true);
+        } else {
+            resultMap.put("success", false);
+            resultMap.put("errorInfo", "已付金额不能大于实收全款");
+        }
 		return resultMap;
 	}
 	

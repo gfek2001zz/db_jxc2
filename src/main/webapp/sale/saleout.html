@@ -134,10 +134,12 @@
 			amount+=row.total;
 			amountCostPrice +=row.totalCost;
 		}
-		$("#amountPayable").val(amount.toFixed(2));
-		$("#amountPaid").val(amount.toFixed(2));
-		$('#amountEarnest').val(0);
-		$('#amountFinalPayment').val(0);
+		$("#amountPayable").numberbox('setValue', amount.toFixed(2));
+		$("#amountPaid").numberbox('setValue', amount.toFixed(2));
+		$('#amountEarnest').numberbox('setValue', 0);
+		$('#amountFinalPayment').numberbox('setValue', amount.toFixed(2));
+
+
 		$('#amountCostPrice').val(amountCostPrice.toFixed(2))
 	}
 	
@@ -194,7 +196,7 @@
 		$("#sellingPrice").val("¥"+row.sellingPrice);
 		$("#price").numberbox("setValue",row.sellingPrice);
 		$("#purchasingPrice").val("¥"+row.purchasingPrice);
-		$('#costPrice').numberbox('setValue', row.purchasingPrice);
+		$('#costPrice').val(row.purchasingPrice);
 		$("#action").val("add");
 		$("#num").focus();
 	}
@@ -213,7 +215,7 @@
 			var selectedRows=$("#dg2").datagrid("getSelections");
 			var row=selectedRows[0];
 			var price=$("#price").numberbox("getValue");
-			var costPrice =$('#costPrice').numberbox('getValue');
+			var costPrice =$('#costPrice').val();
 			var num=$("#num").numberbox("getValue");
 			var total=price*num;
 			var totalCost = costPrice*num;
@@ -235,7 +237,7 @@
 			var selectedRows=$("#dg").datagrid("getSelections");
 			var row=selectedRows[0];
 			var price=$("#price").numberbox("getValue");
-            var costPrice =$('#costPrice').numberbox('getValue');
+            var costPrice =$('#costPrice').val();
 			var num=$("#num").numberbox("getValue");
             var totalCost = costPrice*num;
 			var total=price*num;
@@ -460,7 +462,7 @@
 				$("#sellingPrice").val("¥"+row.sellingPrice);
                 $("#purchasingPrice").val("¥"+row.purchasingPrice);
 				$("#price").numberbox("setValue",row.sellingPrice);
-                $("#costPrice").numberbox("setValue",row.purchasingPrice);
+                $("#costPrice").val(row.purchasingPrice);
 				$("#action").val("add");
 				$("#num").focus();
 			}
@@ -478,6 +480,51 @@
             onDblClickRow:function(index, row) {
                 saveUser();
             }
+        });
+
+
+        $("#amountPaid").change(function() {
+            var amountPaid = $(this).val() ? parseFloat($(this).val()) : 0;
+            var amountEarnest = $("#amountEarnest").val() ? parseFloat($("#amountEarnest").val()) : 0;
+            var amountPayable = $("#amountPayable").val() ? parseFloat($("#amountPayable").val()) : 0;
+
+            if (amountPayable >= amountPaid) {
+                var amountFinalPayment = amountPaid - amountEarnest;
+
+                if (amountFinalPayment > -1) {
+                    $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
+                } else {
+                    $.messager.alert("系统提示","实收定金不能大于实收全款！");
+                    $("#amountEarnest").numberbox('setValue', '');
+                }
+            } else {
+                $.messager.alert("系统提示","实收全款不能大于统一零售价！");
+                $("#amountPaid").numberbox('setValue', '');
+                $("#amountEarnest").numberbox('setValue', '');
+            }
+
+		});
+
+        $("#amountEarnest").change(function() {
+            var amountEarnest = $(this).val() ? parseFloat($(this).val()) : 0;
+            var amountPaid = $("#amountPaid").val() ? parseFloat($("#amountPaid").val()) : 0;
+            var amountPayable = $("#amountPayable").val() ? parseFloat($("#amountPayable").val()) : 0;
+
+            if (amountPayable >= amountPaid) {
+                var amountFinalPayment = amountPaid - amountEarnest;
+
+                if (amountFinalPayment > -1) {
+                    $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
+                } else {
+                    $.messager.alert("系统提示","实收定金不能大于实收全款！");
+                    $("#amountEarnest").numberbox('setValue', '');
+                }
+            } else {
+                $.messager.alert("系统提示","实收全款不能大于统一零售价！");
+                $("#amountPaid").numberbox('setValue', '');
+                $("#amountEarnest").numberbox('setValue', '');
+            }
+
         });
 
 	});
@@ -525,36 +572,36 @@
 
 				<div class="frm-container">
 					<div class="frm-field">
-						<span class="frm-label">销售金额：</span>
+						<span class="frm-label">统一零售价：</span>
 						<span class="frm-control">
-							<input type="text" id="amountPayable" name="amountPayable"
-                                   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+							<input type="text" id="amountPayable" name="amountPayable"  data-options="min:0,precision:2"
+                                   class="easyui-validatebox easyui-numberbox" required="true" readonly="readonly" size="10"/>
 
                             <input type="hidden" id="amountCostPrice" name="amountCostPrice" />
 						</span>
 					</div>
 
 					<div class="frm-field">
-						<span class="frm-label">实付金额：</span>
+						<span class="frm-label">实收全款：</span>
 						<span class="frm-control">
-							<input type="text" id="amountPaid" name="amountPaid"
-                                   class="easyui-validatebox" required="true" size="10"/>
+							<input type="text" id="amountPaid" name="amountPaid"  data-options="min:0,precision:2"
+                                   class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 
 					<div class="frm-field">
 						<span class="frm-label">实收定金：</span>
 						<span class="frm-control">
-							<input type="text" id="amountEarnest" name="amountEarnest"
-                                   class="easyui-validatebox" required="true" size="10"/>
+							<input type="text" id="amountEarnest" name="amountEarnest" data-options="min:0,precision:2"
+                                   class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 
 					<div class="frm-field">
-						<span class="frm-label">实收尾款：</span>
+						<span class="frm-label">待收余款：</span>
 						<span class="frm-control">
-							<input type="text" id="amountFinalPayment" name="amountFinalPayment"
-                                   class="easyui-validatebox" required="true" size="10"/>
+							<input type="text" id="amountFinalPayment" name="amountFinalPayment" readonly="readonly"
+                                   class="easyui-numberbox easyui-validatebox" required="true" data-options="min:0,precision:2" size="10"/>
 						</span>
 					</div>
 				</div>
@@ -667,7 +714,7 @@
 							<th field="name" width="150" align="left">商品名称</th>
 							<th field="model" width="50" align="center">商品型号</th>
 							<th field="size" width="50" align="center">尺寸</th>
-							<th field="sellingPrice" width="50" align="right" formatter="formatLastSellingPrice">销售单价</th>
+							<th field="sellingPrice" width="50" align="right" formatter="formatLastSellingPrice">统一零售价</th>
 							<th field="purchasingPrice" width="50" hidden="true" align="right" formatter="formatSellingPrice">成本均价</th>
 							<!--<th field="inventoryQuantity" width="50" align="center">库存数量</th>-->
 						</thead>
@@ -707,13 +754,9 @@
 					<td>
 						<input type="text" id="size" name="size" readonly="readonly" size="10"/>
 					</td>
-                    <td>销售单价：</td>
+                    <td>统一零售价：</td>
                     <td>
                         <input type="text" id="sellingPrice" name="sellingPrice" readonly="readonly" size="10"/>
-                    </td>
-                    <td>成本价：</td>
-                    <td>
-                        <input type="text" id="purchasingPrice" name="purchasingPrice" readonly="readonly" size="10"/>
                     </td>
 				</tr>
 			</table>
@@ -728,11 +771,12 @@
 						    <input type="hidden" id="action"/>
 						    <input type="hidden" id="rowIndex"/>
 							<input type="text" id="price" name="price" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>
+                            <input type="hidden" id="costPrice" name="costPrice" />
 						</td>
-                        <td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;成本价：</td>
-                        <td>
-                            <input type="text" id="costPrice" name="costPrice" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>
-                        </td>
+                        <!--<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;成本价：</td>-->
+                        <!--<td>-->
+                            <!--<input type="text" id="costPrice" name="costPrice" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>-->
+                        <!--</td>-->
 						<td align="right" width="60">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：</td>
 						<td>
 							<input type="text" id="num" name="num" class="easyui-numberbox" data-options="min:1" required="true" size="10"/>

@@ -412,9 +412,54 @@
         })
     }
 
+    function openChooseGoodsStyleDialog() {
+        $("#dlg6").dialog("open").dialog("setTitle","选择商品款式");
+        var typeName = $("#typeName").val();
+        if (typeName == "皮床") {
+            var classifyCode = "BED_STYLE";
+
+        } else if (typeName == "床垫") {
+            var classifyCode = "MATTRESS_STYLE";
+        }
 
 
-	function saveGoodsDictItem(fieldId) {
+        $("#dg6").datagrid('load',{
+            "classifyCode": classifyCode
+        });
+
+        $("#chooseSave").unbind();
+        $("#chooseSave").bind("click", function() {
+            saveGoodsDictItem("style");
+        })
+
+    }
+
+    function openChooseGoodsColorDialog() {
+        $("#dlg6").dialog("open").dialog("setTitle","选择商品颜色");
+        var typeName = $("#typeName").val();
+        if (typeName == "皮床") {
+            var classifyCode = "BED_COLOR";
+
+        } else if (typeName == "床垫") {
+            var classifyCode = "MATTRESS_COLOR";
+        }
+
+
+        $("#dg6").datagrid('load',{
+            "classifyCode": classifyCode
+        });
+
+        $("#chooseSave").unbind();
+        $("#chooseSave").bind("click", function() {
+            saveGoodsDictItem("color");
+        })
+
+    }
+
+
+
+
+    function saveGoodsDictItem(fieldId) {
         var selectedRows=$("#dg6").datagrid("getSelections");
         if(selectedRows.length!=1){
             $.messager.alert("系统提示","请选择一条数据！");
@@ -543,12 +588,14 @@
 					<td>款式：</td>
 					<td>
 						<input type="text" id="style" name="style" style="width: 120px"  />
+						<a href="javascript:openChooseGoodsStyleDialog()" class="easyui-linkbutton" iconCls="icon-search" plain="true"></a>
 					</td>
 				</tr>
 				<tr>
 					<td>颜色：</td>
 					<td>
 						<input type="text" id="color" name="color" style="width: 120px"  />
+						<a href="javascript:openChooseGoodsColorDialog()" class="easyui-linkbutton" iconCls="icon-search" plain="true"></a>
 					</td>
 					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 					<td>尺寸：</td>

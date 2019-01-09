@@ -31,5 +31,7 @@ public interface SaleListGoodsService {
 	 * @return
 	 */
 	public List<SaleListGoods> list(SaleListGoods saleListGoods);
+
+	void delete(Integer saleId);
 	
 }

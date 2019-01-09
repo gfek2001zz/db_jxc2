@@ -61,6 +61,10 @@ public class SaleListGoodsServiceImpl implements SaleListGoodsService{
 		});
 	}
 
-	
-	
+	@Override
+	public void delete(Integer saleId) {
+		saleListGoodsRepository.deleteBySaleListId(saleId);
+	}
+
+
 }

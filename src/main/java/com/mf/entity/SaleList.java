@@ -51,6 +51,9 @@ public class SaleList {
 	
 	private float amountPaid; // 实付金额
 
+	@Transient
+	private float amountDiscount; //优惠金额
+
 	private float amountEarnest; //实收定金
 
 	private float amountFinalPayment; //待收余额
@@ -344,6 +347,14 @@ public class SaleList {
 
 	public void setSaleDay(String saleDay) {
 		this.saleDay = saleDay;
+	}
+
+	public float getAmountDiscount() {
+		return amountDiscount;
+	}
+
+	public void setAmountDiscount(float amountDiscount) {
+		this.amountDiscount = amountDiscount;
 	}
 
 	@Override
