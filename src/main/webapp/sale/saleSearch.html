@@ -134,7 +134,7 @@
 
 			$.get('/user/hasRole', {name: role}, function(data) {
 			    if (!data.hasRole) {
-                    self.hide();
+                    self.empty();
 				}
 
 			}, 'json');
@@ -290,8 +290,8 @@
 			&nbsp;&nbsp;-&nbsp;&nbsp;
 			<input id="s_eSaleDate" class="easyui-datebox" editable=false style="width:100px"/>
 			&nbsp;&nbsp;<a href="javascript:searchSale()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
-			&nbsp;&nbsp;<a href="javascript:deleteSale()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
 			<span hasRole="roleKey2">
+				&nbsp;&nbsp;<a href="javascript:deleteSale()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
 				&nbsp;&nbsp;<a href="javascript:modifyAmount()" class="easyui-linkbutton" iconCls="icon-save" plain="true">收尾款</a>
 				&nbsp;&nbsp;<a href="javascript:exportSale()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
 			</span>
