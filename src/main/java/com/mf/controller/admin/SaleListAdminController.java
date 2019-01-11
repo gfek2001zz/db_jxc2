@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.mf.entity.*;
 import com.mf.export.impl.ExcelExportTask;
@@ -118,8 +119,13 @@ public class SaleListAdminController {
 	 */
 	@RequestMapping("/list")
 	@RequiresPermissions(value={"销售单据查询","客户统计"},logical=Logical.OR)
-	public Map<String,Object> list(SaleList saleList, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows)throws Exception{
+	public Map<String,Object> list(SaleList saleList, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows, HttpSession session)throws Exception{
 		Map<String,Object> resultMap=new HashMap<>();
+		User user = (User) session.getAttribute("currentUser");
+		Shop shop = new Shop();
+		shop.setId(user.getShop().getId());
+		saleList.setShop(shop);
+
 		List<SaleList> saleListList=saleListService.list(saleList, page, rows, Direction.DESC, "saleDate");
 		for (SaleList saleList1 : saleListList) {
             List<SaleListPerson> saleListPeople = saleListPersonService.findListBySaleListId(saleList1);

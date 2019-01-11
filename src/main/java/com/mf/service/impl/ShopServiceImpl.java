@@ -88,7 +88,12 @@ public class ShopServiceImpl implements ShopService{
 
 	@Override
 	public List<Shop> findByName(String name) {
-		return shopRepository.findByName(name);
+		List<Shop> shops = shopRepository.findByName(name);
+		for (Shop shop : shops) {
+			shop.setName(shop.getName() + "-" + shop.getName2());
+		}
+
+		return shops;
 	}
 	
 

@@ -129,6 +129,9 @@ public class SaleListServiceImpl implements SaleListService{
 			if(saleList.geteSaleDate()!=null){
 				predicate.getExpressions().add(cb.lessThanOrEqualTo(root.get("saleDate"), saleList.geteSaleDate()));
 			}
+			if(saleList.getShop() != null && saleList.getShop().getId() != null) {
+				predicate.getExpressions().add(cb.equal(root.get("shop").get("id"), saleList.getShop().getId()));
+			}
 		}
 
 		return predicate;
