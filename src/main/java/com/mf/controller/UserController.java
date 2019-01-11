@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import com.mf.entity.*;
+import com.mf.service.*;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -20,14 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mf.entity.Log;
-import com.mf.entity.Menu;
-import com.mf.entity.Role;
-import com.mf.entity.User;
-import com.mf.service.LogService;
-import com.mf.service.MenuService;
-import com.mf.service.RoleService;
-import com.mf.service.UserService;
 import com.mf.util.StringUtil;
 
 /**
@@ -50,6 +44,9 @@ public class UserController {
 	
 	@Resource
 	private LogService logService;
+
+	@Resource
+	private DictItemService dictItemService;
 	
 	/**
 	 * 用户登录判断
@@ -129,6 +126,24 @@ public class UserController {
 		Role currentRole=(Role) session.getAttribute("currentRole");
 		return "欢迎您："+currentUser.getTrueName()+"&nbsp;[&nbsp;"+currentRole.getName()+"&nbsp;]";
 	}
+
+	@ResponseBody
+	@GetMapping("/hasRole")
+	public Map<String, Object> loadUserHasRole(Role role, HttpSession session) throws Exception {
+		Role currentRole= (Role) session.getAttribute("currentRole");
+		DictItem dictItem = dictItemService.findItemByItemCode("USER_ROLE_RALES", role.getName());
+
+
+		Map<String, Object> resultMap = new HashMap<>();
+		if (dictItem.getItemName().equals(currentRole.getName())) {
+			resultMap.put("hasRole", true);
+		} else {
+			resultMap.put("hasRole", false);
+		}
+
+		return resultMap;
+	}
+
 	
 	/**
 	 * 加载权限菜单

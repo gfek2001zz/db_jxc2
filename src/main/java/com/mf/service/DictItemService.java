@@ -15,4 +15,6 @@ public interface DictItemService {
     void delete(Integer id);
 
     DictItem findById(Integer id);
+
+    DictItem findItemByItemCode(String classifyCode, String itemCode);
 }

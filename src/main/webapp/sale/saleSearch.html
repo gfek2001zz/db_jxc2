@@ -125,14 +125,33 @@
 						saleListId:row.id
 					}
 				});
-			},
-			onDblClickRow: function(index, row) {
-                $("#dlg").dialog("open").dialog("setTitle","销售金额更新");
-                $("input[name=saleId]").val(row.id);
 			}
+		});
+
+		$.each($("span[hasRole]"), function() {
+			var role = $(this).attr('hasRole');
+			var self = $(this);
+
+			$.get('/user/hasRole', {name: role}, function(data) {
+			    if (!data.hasRole) {
+                    self.hide();
+				}
+
+			}, 'json');
 		});
 		
 	});
+
+	function modifyAmount() {
+        var selectedRows=$("#dg").datagrid("getSelections");
+        if(selectedRows.length!=1){
+            $.messager.alert("系统提示","请选择一条要修改尾款的销售单！");
+            return;
+        }
+
+        $("#dlg").dialog("open").dialog("setTitle","销售金额更新");
+        $("input[name=saleId]").val(selectedRows[0].id);
+    }
 
 	function saveUserAmount() {
         $("#fm").form("submit",{
@@ -272,8 +291,8 @@
 			<input id="s_eSaleDate" class="easyui-datebox" editable=false style="width:100px"/>
 			&nbsp;&nbsp;<a href="javascript:searchSale()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
 			&nbsp;&nbsp;<a href="javascript:deleteSale()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
-			<span shiro:hasRole="财务">
-				&nbsp;&nbsp;<a href="javascript:" class="easyui-linkbutton" iconCls="icon-save" plain="true">收尾款</a>
+			<span hasRole="roleKey2">
+				&nbsp;&nbsp;<a href="javascript:modifyAmount()" class="easyui-linkbutton" iconCls="icon-save" plain="true">收尾款</a>
 				&nbsp;&nbsp;<a href="javascript:exportSale()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
 			</span>
 		</fieldset>

@@ -71,4 +71,9 @@ public class DictItemServiceImpl implements DictItemService {
     public DictItem findById(Integer id) {
         return dictItemRepository.findOne(id);
     }
+
+    @Override
+    public DictItem findItemByItemCode(String classifyCode, String itemCode) {
+        return dictItemRepository.findItemByItemCode(classifyCode, itemCode);
+    }
 }
