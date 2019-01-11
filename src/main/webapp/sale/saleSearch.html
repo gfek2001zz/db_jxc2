@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="Thymeleaf"
+	  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
 <meta charset="UTF-8">
 <title>销售单据查询</title>
@@ -72,6 +73,10 @@
 	function formatSupplier(val,row){
 		return val.name;
 	}
+
+	function formatShopName(val, row) {
+		return val.name + "-" +  val.name2;
+    }
 	
 	function formatAmountPayable(val,row){
 	    if (val) {
@@ -226,7 +231,7 @@
 		<thead>
 			<th field="id" width="20" align="center" hidden="true">销售单ID</th>
 			<th field="saleDate" width="80" align="center">销售日期</th>
-			<th field="shop" width="50" align="center" formatter="formatSupplier">门店</th>
+			<th field="shop" width="80" align="center" formatter="formatShopName">门店</th>
 			<th field="customer" width="100" align="center" formatter="formatSupplier">客户</th>
 			<th field="customer" width="100" align="center" formatter="formatAddress">地址</th>
 			<th field="customer" width="100" align="center" formatter="formatContact">电话</th>
@@ -267,7 +272,10 @@
 			<input id="s_eSaleDate" class="easyui-datebox" editable=false style="width:100px"/>
 			&nbsp;&nbsp;<a href="javascript:searchSale()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
 			&nbsp;&nbsp;<a href="javascript:deleteSale()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
-			&nbsp;&nbsp;<a href="javascript:exportSale()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
+			<span shiro:hasRole="财务">
+				&nbsp;&nbsp;<a href="javascript:" class="easyui-linkbutton" iconCls="icon-save" plain="true">收尾款</a>
+				&nbsp;&nbsp;<a href="javascript:exportSale()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
+			</span>
 		</fieldset>
 	</div>
  </div>
