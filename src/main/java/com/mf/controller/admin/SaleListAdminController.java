@@ -121,10 +121,14 @@ public class SaleListAdminController {
 	@RequiresPermissions(value={"销售单据查询","客户统计"},logical=Logical.OR)
 	public Map<String,Object> list(SaleList saleList, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows, HttpSession session)throws Exception{
 		Map<String,Object> resultMap=new HashMap<>();
-		User user = (User) session.getAttribute("currentUser");
-		Shop shop = new Shop();
-		shop.setId(user.getShop().getId());
-		saleList.setShop(shop);
+		Role currentRole = (Role) session.getAttribute("currentRole");
+
+		if ("销售".equals(currentRole.getName())) {
+			User user = (User) session.getAttribute("currentUser");
+			Shop shop = new Shop();
+			shop.setId(user.getShop().getId());
+			saleList.setShop(shop);
+		}
 
 		List<SaleList> saleListList=saleListService.list(saleList, page, rows, Direction.DESC, "saleDate");
 		for (SaleList saleList1 : saleListList) {
