@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/static/js/Mtils.min.js"></script>
+    <script type="text/javascript" src="salePerson.js"></script>
+</head>
+<body>
+<table id="dg" title="销售管理" class="easyui-datagrid"
+       fitColumns="false" pagination="true" rownumbers="true" singleSelect="true"
+       fit="true" toolbar="#tb" url="/admin/salePerson/list">
+    <thead>
+    <tr>
+        <th field="id" width="50" align="center">编号</th>
+        <th field="shop" width="100" align="center" formatter="">所属门店</th>
+        <th field="name" width="200" align="center">销售员</th>
+    </tr>
+    </thead>
+</table>
+<div id="tb">
+    <div>
+        <a href="javascript:openSalePersonAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+        <a href="javascript:openSalePersonDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+        <a href="javascript:deleteSalePerson()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+    </div>
+    <div>
+        &nbsp;销售员名称：&nbsp;<input type="text" id="s_name" size="20" onkeydown="if(event.keyCode==13) searchGoods()"/>
+        <a href="javascript:searchSalePerson()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+    </div>
+</div>
+
+<div id="dlg" class="easyui-dialog" style="width: 400px;height: 180px;padding: 10px 20px"
+     closed="true" buttons="#dlg-buttons" data-options="onClose:function(){resetValue()}">
+    <form id="fm2" method="post">
+        <table>
+            <tr>
+                <td>所属门店：</td>
+                <td>
+                    <input class="easyui-combobox" id="shopId" name="shop.id" style="width: 180px" required="true"
+                           data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/shop/comboList'"/>
+                </td>
+            </tr>
+            <tr>
+                <td>销售员姓名：</td>
+                <td>
+                    <input type="text" id="name" name="name" style="width: 178px"  />
+                </td>
+            </tr>
+        </table>
+
+        <div id="dlg-buttons">
+            <a id="saveAddAddNextButton" href="javascript:saveSalePerson(2)" class="easyui-linkbutton" iconCls="icon-ok" >保存并新增下一销售员</a>
+            <a href="javascript:saveSalePerson(1)" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+            <a href="javascript:closeSalePersonDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
