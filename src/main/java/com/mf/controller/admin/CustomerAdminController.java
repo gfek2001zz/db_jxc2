@@ -3,6 +3,7 @@ package com.mf.controller.admin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -41,11 +42,20 @@ public class CustomerAdminController {
 	 */
 	@RequestMapping("/comboList")
 	@RequiresPermissions(value={"销售出库","客户退货","销售单据查询","客户退货查询","客户统计"},logical=Logical.OR)
-	public List<Customer> comboList(String q)throws Exception{
-		if(q==null){
-			q="";
+	public List<Customer> comboList(Customer customer)throws Exception{
+		String q = "";
+		if(customer.getName() != null){
+			q=customer.getName();
 		}
-		return customerService.findByName("%"+q+"%");
+		List<Customer> customers = customerService.findByName("%"+q+"%");
+
+		if (customer.getShop() != null) {
+			customers = customers.stream()
+					.filter(customer1 -> customer1.getShop().getId().equals(customer.getShop().getId()))
+					.collect(Collectors.toList());
+		}
+
+		return customers;
 	}
 	
 	/**

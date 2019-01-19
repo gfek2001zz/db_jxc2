@@ -50,7 +50,10 @@
 						<span class="frm-label">门店：</span>
 						<span class="frm-control">
 							<input class="easyui-combobox" id="shopId" name="shop.id" style="width: 180px" required="true"
-								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/shop/comboList'"/>
+								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/shop/comboList', onSelect: function(rec) {
+								   		var url = '/admin/customer/comboList?shop.id=' + rec.id;
+								   		$('#customerId').combobox('reload', url);
+								   }"/>
 						</span>
 					</div>
 
@@ -58,7 +61,7 @@
 						<span class="frm-label">客户：</span>
 						<span class="frm-control">
 							<input class="easyui-combobox" id="customerId" name="customer.id" style="width: 180px" required="true"
-								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name',url:'/admin/customer/comboList'"/>
+								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name'"/>
 						</span>
 					</div>
 

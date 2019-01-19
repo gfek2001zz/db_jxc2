@@ -117,8 +117,8 @@ public class SaleListServiceImpl implements SaleListService{
 	private Predicate getPredicate(Root<SaleList> root, CriteriaBuilder cb, SaleList saleList) {
 		Predicate predicate=cb.conjunction();
 		if(saleList!=null){
-			if(StringUtil.isNotEmpty(saleList.getSaleNumber())){
-				predicate.getExpressions().add(cb.like(root.get("saleNumber"), "%"+saleList.getSaleNumber().trim()+"%"));
+			if(StringUtil.isNotEmpty(saleList.getContractNumber())){
+				predicate.getExpressions().add(cb.like(root.get("contractNumber"), "%"+saleList.getContractNumber().trim()+"%"));
 			}
 			if(saleList.getCustomer()!=null && saleList.getCustomer().getId()!=null){
 				predicate.getExpressions().add(cb.equal(root.get("customer").get("id"), saleList.getCustomer().getId()));

@@ -3,9 +3,13 @@ package com.mf.controller.admin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
+import com.mf.entity.Role;
+import com.mf.entity.User;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Sort.Direction;
@@ -17,6 +21,7 @@ import com.mf.entity.Log;
 import com.mf.entity.Shop;
 import com.mf.service.LogService;
 import com.mf.service.ShopService;
+import sun.nio.cs.ext.SJIS;
 
 /**
  * 后台管理客户Controller
@@ -41,11 +46,19 @@ public class ShopAdminController {
 	 */
 	@RequestMapping("/comboList")
 	@RequiresPermissions(value={"销售出库","客户退货","销售单据查询","客户退货查询","客户统计"},logical=Logical.OR)
-	public List<Shop> comboList(String q)throws Exception{
+	public List<Shop> comboList(String q, HttpSession session)throws Exception{
+		Role currentRole = (Role) session.getAttribute("currentRole");
 		if(q==null){
 			q="";
 		}
-		return shopService.findByName("%"+q+"%");
+		List<Shop> shops = shopService.findByName("%"+q+"%");
+		if ("销售".equals(currentRole.getName())) {
+			User user = (User) session.getAttribute("currentUser");
+			shops = shops.stream()
+					.filter(shopVO -> shopVO.getId().equals(user.getShop().getId())).collect(Collectors.toList());
+		}
+
+		return shops;
 	}
 	
 	/**

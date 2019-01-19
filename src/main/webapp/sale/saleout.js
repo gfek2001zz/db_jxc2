@@ -2,13 +2,13 @@ var url;
 
 $(document).ready(function() {
 
-    $("#customerId").combobox({
-        mode:'remote',
-        url:'/admin/customer/comboList',
-        valueField:'id',
-        textField:'name',
-        delay:100
-    });
+//    $("#customerId").combobox({
+//        mode:'remote',
+//        url:'/admin/customer/comboList',
+//        valueField:'id',
+//        textField:'name',
+//        delay:100
+//    });
 
     $("#saleDate").datebox("setValue",genTodayStr());
 

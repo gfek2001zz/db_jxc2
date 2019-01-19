@@ -1,10 +1,6 @@
 package com.mf.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 客户实体
@@ -18,6 +14,10 @@ public class Customer {
 	@Id
 	@GeneratedValue
 	private Integer id; // 编号
+
+	@ManyToOne
+	@JoinColumn(name = "shopId")
+	private Shop shop;
 	
 	@Column(length=200)
 	private String name; // 客户名称
@@ -80,6 +80,14 @@ public class Customer {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+	public Shop getShop() {
+		return shop;
+	}
+
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
 
 	@Override

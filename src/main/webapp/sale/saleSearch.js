@@ -13,7 +13,7 @@ function searchSale(){
     }
     $("#dg").datagrid({
         queryParams:{
-            saleNumber:$("#s_saleNumber").val(),
+            contractNumber:$("#s_saleNumber").val(),
             "customer.id":customerId,
             state:$("#s_state").combobox("getValue"),
             bSaleDate:$("#s_bSaleDate").datebox("getValue"),
@@ -174,7 +174,7 @@ function exportSale() {
     }
 
     var searchObj = {
-        saleNumber:$("#s_saleNumber").val(),
+        contractNumber:$("#s_saleNumber").val(),
         "customer.id":customerId,
         state:$("#s_state").combobox("getValue"),
         bSaleDate:$("#s_bSaleDate").datebox("getValue"),
