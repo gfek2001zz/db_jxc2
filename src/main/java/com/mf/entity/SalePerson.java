@@ -10,7 +10,7 @@ public class SalePerson {
     private Integer id;
 
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "shopId")
     private Shop shop;
 

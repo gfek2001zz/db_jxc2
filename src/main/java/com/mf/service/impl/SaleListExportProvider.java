@@ -63,7 +63,7 @@ public class SaleListExportProvider implements IExcelExportProvider {
 
             StringBuffer buffer = new StringBuffer();
             for (SaleListPerson saleListPerson : saleListPeople) {
-                buffer.append(saleListPerson.getUser().getTrueName()).append(":")
+                buffer.append(saleListPerson.getSalePerson().getName()).append(":")
                         .append(saleListPerson.getAmount() * 100 / 100.0F).append(";");
             }
 

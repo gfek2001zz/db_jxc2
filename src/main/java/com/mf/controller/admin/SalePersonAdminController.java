@@ -1,7 +1,9 @@
 package com.mf.controller.admin;
 
+import com.mf.entity.Log;
 import com.mf.entity.SalePerson;
-import com.mf.service.SalePersonSerivce;
+import com.mf.service.LogService;
+import com.mf.service.SalePersonService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Sort;
@@ -20,17 +22,34 @@ import java.util.Map;
 public class SalePersonAdminController {
 
     @Resource
-    private SalePersonSerivce salePersonSerivce;
+    private SalePersonService salePersonService;
+
+    @Resource
+    private LogService logService;
 
     @RequestMapping("/list")
     @RequiresPermissions(value={"销售管理"},logical= Logical.OR)
     public Map<String,Object> list(SalePerson salePerson, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows, HttpSession session)throws Exception{
         Map<String,Object> resultMap=new HashMap<>();
 
-        List<SalePerson> salePersonList = salePersonSerivce.list(salePerson, page, rows,
+        List<SalePerson> salePersonList = salePersonService.list(salePerson, page, rows,
                 Sort.Direction.DESC, "id");
         resultMap.put("rows", salePersonList);
 
+        return resultMap;
+    }
+
+    @RequestMapping("/save")
+    @RequiresPermissions(value = {"销售管理"})
+    public Map<String, Object> save(SalePerson salePerson) {
+        Map<String,Object> resultMap=new HashMap<>();
+        salePersonService.save(salePerson);
+        if(salePerson.getId()!=null){
+            logService.save(new Log(Log.UPDATE_ACTION,"更新客户信息"+salePerson));
+        }else{
+            logService.save(new Log(Log.ADD_ACTION,"添加客户信息"+salePerson));
+        }
+        resultMap.put("success", true);
         return resultMap;
     }
 }

@@ -2,7 +2,7 @@ package com.mf.service.impl;
 
 import com.mf.entity.SalePerson;
 import com.mf.repository.SalePersonRepository;
-import com.mf.service.SalePersonSerivce;
+import com.mf.service.SalePersonService;
 import com.mf.util.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Service(value = "salePersonService")
-public class SalePersonServiceImpl implements SalePersonSerivce {
+public class SalePersonServiceImpl implements SalePersonService {
     @Resource
     private SalePersonRepository salePersonRepository;
 
@@ -47,6 +47,11 @@ public class SalePersonServiceImpl implements SalePersonSerivce {
         });
     }
 
+    @Override
+    public void save(SalePerson salePerson) {
+        salePersonRepository.save(salePerson);
+    }
+
 
     private Predicate getPredicate(Root<SalePerson> root, CriteriaBuilder cb, SalePerson salePerson) {
         Predicate predicate=cb.conjunction();
@@ -54,6 +59,11 @@ public class SalePersonServiceImpl implements SalePersonSerivce {
         if (StringUtil.isNotEmpty(salePerson.getName())) {
             predicate.getExpressions().add(cb.like(root.get("name"), "%" + salePerson.getName() + "%"));
         }
+
+        if (salePerson.getShop() != null && salePerson.getShop().getId() != null) {
+            predicate.getExpressions().add(cb.equal(root.get("shop").get("id"), salePerson.getShop().getId()));
+        }
+
         return predicate;
     }
 }

@@ -17,7 +17,7 @@ public interface SaleListPersonRepository extends JpaRepository<SaleListPerson, 
      * @param saleListId
      * @return
      */
-    @Query(value="select * FROM t_sale_list_person t, t_user u WHERE t.user_id = u.id AND sale_id=?1",nativeQuery=true)
+    @Query(value="select * FROM t_sale_list_person t, t_sale_person u WHERE t.sale_person_id = u.id AND sale_id=?1",nativeQuery=true)
     @Modifying
     public List<SaleListPerson> findListBySaleListId(Integer saleListId);
     /**

@@ -16,8 +16,8 @@ public class SaleListPerson {
 
 
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "salePersonId")
+    private SalePerson salePerson;
 
 
     @Column
@@ -39,12 +39,12 @@ public class SaleListPerson {
         this.saleList = saleList;
     }
 
-    public User getUser() {
-        return user;
+    public SalePerson getSalePerson() {
+        return salePerson;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setSalePerson(SalePerson salePerson) {
+        this.salePerson = salePerson;
     }
 
     public Float getAmount() {
