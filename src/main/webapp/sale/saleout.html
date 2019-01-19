@@ -41,7 +41,7 @@
 <script type="text/javascript" src="saleout.js"></script>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north'" style="height: 215px;padding: 10px;border: 0px;padding-top: 20px">
+	<div data-options="region:'north'" style="height: 238px;padding: 10px;border: 0px;padding-top: 20px">
 		<fieldset style="border-color: #E7F0FF">
 			<legend>单号：<span id="dh"></span></legend>
 			<form id="fm" method="post">
@@ -90,18 +90,38 @@
 					</div>
 
 					<div class="frm-field">
-						<span class="frm-label">实收全款：</span>
+						<span class="frm-label">成交价：</span>
 						<span class="frm-control">
 							<input type="text" id="amountPaid" name="amountPaid"  data-options="min:0,precision:2"
                                    class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 
+
+					<div class="frm-field">
+						<span class="frm-label">折扣：</span>
+						<span class="frm-control">
+							<input type="text" id="amountDiscountRate" name="amountDiscountRate"  data-options="min:0,precision:2"
+								   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">优惠金额：</span>
+						<span class="frm-control">
+							<input type="text" id="amountDiscount" name="amountdiscount"  data-options="min:0,precision:2"
+								   class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
+						</span>
+					</div>
+				</div>
+
+				<div class="frm-container">
+
 					<div class="frm-field">
 						<span class="frm-label">实收定金：</span>
 						<span class="frm-control">
 							<input type="text" id="amountEarnest" name="amountEarnest" data-options="min:0,precision:2"
-                                   class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
+								   class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
 						</span>
 					</div>
 
@@ -109,12 +129,10 @@
 						<span class="frm-label">待收余款：</span>
 						<span class="frm-control">
 							<input type="text" id="amountFinalPayment" name="amountFinalPayment" readonly="readonly"
-                                   class="easyui-numberbox easyui-validatebox" required="true" data-options="min:0,precision:2" size="10"/>
+								   class="easyui-numberbox easyui-validatebox" required="true" data-options="min:0,precision:2" size="10"/>
 						</span>
 					</div>
-				</div>
 
-				<div class="frm-container">
 					<div class="frm-field">
 						<span class="frm-label">工厂下单时间：</span>
 						<span class="frm-control">
@@ -128,15 +146,17 @@
 							<input type="text" name="deliveryDate" class="easyui-datebox" style="width: 180px" required="true" />
 						</span>
 					</div>
+				</div>
 
-                    <div class="frm-field">
-                        <span class="frm-label">销售日期：</span>
-                        <span class="frm-control">
+				<div class="frm-container">
+					<div class="frm-field">
+						<span class="frm-label">销售日期：</span>
+						<span class="frm-control">
 							<input type="text" id="saleDate" name="saleDate" class="easyui-datebox" style="width: 180px" required="true" />
 						</span>
-                    </div>
+					</div>
 
-                    <div class="frm-field">
+					<div class="frm-field">
 						<span class="frm-label">媒人：</span>
 						<span class="frm-control">
 							<input type="text" name="matchmaker" style="width: 180px" />

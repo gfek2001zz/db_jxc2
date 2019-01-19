@@ -96,6 +96,9 @@ public class SaleListServiceImpl implements SaleListService{
 			saleList1.setAmountBalance(saleList1.getAmountEarnest() + amountPayment);
 			saleList1.setAmountFinalPayment(saleList1.getAmountPaid() - saleList1.getAmountBalance());
 			saleList1.setAmountDiscount(saleList1.getAmountPayable() - saleList1.getAmountPaid());
+
+			Float amountDiscountRate = Math.round(saleList1.getAmountDiscount() / saleList1.getAmountPayable() * 100.0F) / 100.0F;
+			saleList1.setAmountDiscountRate(amountDiscountRate + "%");
 		}
 
 		return result;

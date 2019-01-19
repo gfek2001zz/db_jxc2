@@ -95,6 +95,8 @@ function setSaleListAmount(){
     $("#amountPaid").numberbox('setValue', amount.toFixed(2));
     $('#amountEarnest').numberbox('setValue', 0);
     $('#amountFinalPayment').numberbox('setValue', amount.toFixed(2));
+    $('#amountDiscount').numberbox('setValue', 0);
+    $('#amountDiscountRate').val('0%');
 
 
     $('#amountCostPrice').val(amountCostPrice.toFixed(2))
@@ -444,18 +446,25 @@ $(document).ready(function() {
         var amountPaid = $(this).val() ? parseFloat($(this).val()) : 0;
         var amountEarnest = $("#amountEarnest").val() ? parseFloat($("#amountEarnest").val()) : 0;
         var amountPayable = $("#amountPayable").val() ? parseFloat($("#amountPayable").val()) : 0;
+        var amountDiscount = $("#amountDiscount").val() ? parseFloat($('#amountDiscount').val()) : 0;
+        var amountDiscountRate = $('#amountDiscountRate').val() ? parseFloat($('#amountDiscountRate').val()) : "0%";
 
         if (amountPayable >= amountPaid) {
             var amountFinalPayment = amountPaid - amountEarnest;
+            var amountDiscount = amountPayable - amountPaid;
+            var amountDiscountRate = (amountDiscount / amountPayable) * 100;
+
+            $("#amountDiscount").numberbox('setValue', amountDiscount);
+            $("#amountDiscountRate").val(amountDiscountRate.toFixed(2) + "%");
 
             if (amountFinalPayment > -1) {
                 $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
             } else {
-                $.messager.alert("系统提示","实收定金不能大于实收全款！");
+                $.messager.alert("系统提示","实收定金不能大于成交价！");
                 $("#amountEarnest").numberbox('setValue', '');
             }
         } else {
-            $.messager.alert("系统提示","实收全款不能大于统一零售价！");
+            $.messager.alert("系统提示","成交价不能大于统一零售价！");
             $("#amountPaid").numberbox('setValue', '');
             $("#amountEarnest").numberbox('setValue', '');
         }
@@ -473,11 +482,11 @@ $(document).ready(function() {
             if (amountFinalPayment > -1) {
                 $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
             } else {
-                $.messager.alert("系统提示","实收定金不能大于实收全款！");
+                $.messager.alert("系统提示","实收定金不能大于成交价！");
                 $("#amountEarnest").numberbox('setValue', '');
             }
         } else {
-            $.messager.alert("系统提示","实收全款不能大于统一零售价！");
+            $.messager.alert("系统提示","成交价不能大于统一零售价！");
             $("#amountPaid").numberbox('setValue', '');
             $("#amountEarnest").numberbox('setValue', '');
         }

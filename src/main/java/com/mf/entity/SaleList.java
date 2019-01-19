@@ -54,6 +54,9 @@ public class SaleList {
 	@Transient
 	private float amountDiscount; //优惠金额
 
+	@Transient
+	private String amountDiscountRate; //折扣
+
 	private float amountEarnest; //实收定金
 
 	private float amountFinalPayment; //待收余额
@@ -193,8 +196,14 @@ public class SaleList {
 	public void seteSaleDate(Date eSaleDate) {
 		this.eSaleDate = eSaleDate;
 	}
-	
-	
+
+	public String getAmountDiscountRate() {
+		return amountDiscountRate;
+	}
+
+	public void setAmountDiscountRate(String amountDiscountRate) {
+		this.amountDiscountRate = amountDiscountRate;
+	}
 
 	public List<SaleListGoods> getSaleListGoodsList() {
 		return saleListGoodsList;
