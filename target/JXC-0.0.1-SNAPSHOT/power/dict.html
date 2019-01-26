@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/default/easyui.css"></link>
+    <link rel="stylesheet" type="text/css" href="/static/jquery-easyui-1.3.3/themes/icon.css"></link>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/static/jquery-easyui-1.3.3/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+
+        function saveDictClassify(){
+            $("#fm").form("submit",{
+                url:url,
+                onSubmit:function(){
+                    return $(this).form("validate");
+                },
+                success:function(result){
+                    var result=eval('('+result+')');
+                    if(result.success){
+                        $.messager.alert("系统提示","保存成功！");
+                        resetValue("classify");
+                        $("#dlg").dialog("close");
+                        $("#dg").datagrid("reload");
+                    }else{
+                        $.messager.alert("系统提示",result.errorInfo);
+                    }
+                }
+            });
+        }
+
+        function saveDictItem(){
+            $("#fm2").form("submit",{
+                url:url,
+                onSubmit:function(){
+                    return $(this).form("validate");
+                },
+                success:function(result){
+                    var result=eval('('+result+')');
+                    if(result.success){
+                        $.messager.alert("系统提示","保存成功！");
+                        resetValue("item");
+                        $("#dlg2").dialog("close");
+                        $("#dg2").datagrid("reload");
+                    }else{
+                        $.messager.alert("系统提示",result.errorInfo);
+                    }
+                }
+            });
+        }
+
+
+        function resetValue(type){
+            if (type == "classify") {
+                $("#classifyCode").val("");
+                $("#classifyName").val("");
+            } else {
+                $("#itemCode").val("");
+                $("#itemName").val("");
+            }
+        }
+
+        function closeDictClassifyDialog(){
+            $("#dlg").dialog("close");
+            resetValue("classify");
+        }
+
+        function closeDictItemDialog(){
+            $("#dlg2").dialog("close");
+            resetValue("item");
+        }
+
+
+        function openDictAddDialog() {
+            $("#dlg").dialog("open").dialog("setTitle","添加字典分类");
+            url="/admin/dict/save";
+        }
+
+
+        function openDictItemAddDialog() {
+            var selectedRows=$("#dg").datagrid("getSelections");
+            if(selectedRows.length!=1){
+                $.messager.alert("系统提示","请选择一个数据字典分类！");
+                return;
+            }
+
+            $("input#item_classify_code").val(selectedRows[0].classifyCode);
+            $("#dlg2").dialog("open").dialog("setTitle","添加字典明细");
+            url="/admin/dict/item/save";
+        }
+
+
+        function openDictModifyDialog() {
+            var selectedRows=$("#dg").datagrid("getSelections");
+            if(selectedRows.length!=1){
+                $.messager.alert("系统提示","请选择一条要修改的数据！");
+                return;
+            }
+            var row=selectedRows[0];
+            $("#dlg").dialog("open").dialog("setTitle","修改字典分类");
+            $("#fm").form("load",row);
+            url="/admin/dict/save?id="+row.id;
+        }
+
+
+        function openDictItemModifyDialog() {
+            var selectedRows=$("#dg2").datagrid("getSelections");
+            if(selectedRows.length!=1){
+                $.messager.alert("系统提示","请选择一条要修改的数据！");
+                return;
+            }
+            var row=selectedRows[0];
+            $("#dlg2").dialog("open").dialog("setTitle","修改字典明细");
+            $("#fm2").form("load",row);
+            url="/admin/dict/item/save?id="+row.id;
+        }
+
+        function deleteDict() {
+            var selectedRows=$("#dg").datagrid("getSelections");
+            if(selectedRows.length==0){
+                $.messager.alert("系统提示","请选择要删除的数据！");
+                return;
+            }
+            var strIds=[];
+            for(var i=0;i<selectedRows.length;i++){
+                strIds.push(selectedRows[i].id);
+            }
+            var ids=strIds.join(",");
+            $.messager.confirm("系统提示","您确定要删除这条数据吗?",function(r){
+                if(r){
+                    $.post("/admin/dict/delete",{ids:ids},function(result){
+                        if(result.success){
+                            $.messager.alert("系统提示","数据已成功删除！");
+                            $("#dg").datagrid("reload");
+                        }else{
+                            $.messager.alert("系统提示",result.errorInfo);
+                        }
+                    },"json");
+                }
+            });
+        }
+
+        function deleteDictItem() {
+            var selectedRows=$("#dg2").datagrid("getSelections");
+            if(selectedRows.length==0){
+                $.messager.alert("系统提示","请选择要删除的数据！");
+                return;
+            }
+            var strIds=[];
+            for(var i=0;i<selectedRows.length;i++){
+                strIds.push(selectedRows[i].id);
+            }
+            var ids=strIds.join(",");
+            $.messager.confirm("系统提示","您确定要删除这条数据吗?",function(r){
+                if(r){
+                    $.post("/admin/dict/item/delete",{ids:ids},function(result){
+                        if(result.success){
+                            $.messager.alert("系统提示","数据已成功删除！");
+                            $("#dg2").datagrid("reload");
+                        }else{
+                            $.messager.alert("系统提示",result.errorInfo);
+                        }
+                    },"json");
+                }
+            });
+        }
+
+        function searchDictClassify() {
+            $("#dg").datagrid('load',{
+                "classifyCode":$("#s_classify_code").val()
+            });
+        }
+
+
+        $(document).ready(function() {
+            $("#dg").datagrid({
+                onClickRow: function (index, row) {
+                    $("#dg2").datagrid('load',{
+                        "classifyCode": row.classifyCode
+                    });
+                }
+            });
+        })
+
+    </script>
+</head>
+<body class="easyui-layout" style="margin: 1px">
+
+    <div data-options="region:'west'" style="width: 500px"  split=true>
+        <table id="dg" title="数据字典" class="easyui-datagrid"
+               fitColumn="true" pagination="true" rownumbers="true" singleSelect="true"
+               url="/admin/dict/list"  fit="true" toolbar="#tb">
+            <thead>
+                <th field="id" width="40" align="center">编号</th>
+                <th field="classifyCode" width="200" align="center">分类编码</th>
+                <th field="classifyName" width="150" align="center">分类名称</th>
+            </thead>
+        </table>
+
+        <div id="tb">
+            <div>
+                <a href="javascript:openDictAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+                <a href="javascript:openDictModifyDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+                <a href="javascript:deleteDict()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+            </div>
+            <div>
+                &nbsp;字典分类：&nbsp;<input type="text" id="s_classify_code" size="20" onkeydown="if(event.keyCode==13) searchCustomer()"/>
+                <a href="javascript:searchDictClassify()" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div data-options="region:'center'">
+
+        <table id="dg2" title="数据字典" class="easyui-datagrid"
+               fitColumn="true" pagination="false" rownumbers="true" singleSelect="true"
+               url="/admin/dict/item/list"  fit="true" toolbar="#tb2">
+            <thead>
+                <th field="id" width="40" align="center">编号</th>
+                <th field="classifyName" width="200" align="center">所属分类</th>
+                <th field="itemCode" width="100" align="center">编码</th>
+                <th field="itemName" width="100" align="center">名称</th>
+            </thead>
+        </table>
+
+
+        <div id="tb2">
+            <div style="padding: 3px">
+                <a href="javascript:openDictItemAddDialog()" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+                <a href="javascript:openDictItemModifyDialog()" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+                <a href="javascript:deleteDictItem()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="dlg" class="easyui-dialog" style="width: 500px;height: 350px;padding: 10px 20px"
+         closed="true" buttons="#dlg-buttons" data-options="onClose:function(){resetValue()}">
+        <form id="fm" method="post">
+            <table cellspacing="8px">
+                <tr>
+                    <td>分类编码：</td>
+                    <td>
+                        <input type="text" id="classifyCode" name="classifyCode" class="easyui-validatebox" required="true" style="width: 250px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>分类名称：</td>
+                    <td>
+                        <input type="text" id="classifyName" name="classifyName" class="easyui-validatebox" required="true" style="width: 250px"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="dlg-buttons">
+        <a href="javascript:saveDictClassify()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+        <a href="javascript:closeDictClassifyDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+    </div>
+
+    <div id="dlg2" class="easyui-dialog" style="width: 500px;height: 350px;padding: 10px 20px"
+         closed="true" buttons="#dlg-buttons2" data-options="onClose:function(){resetValue()}">
+        <form id="fm2" method="post">
+            <table cellspacing="8px">
+                <tr>
+                    <td>编码：</td>
+                    <td>
+                        <input type="text" id="itemCode" name="itemCode" class="easyui-validatebox" required="true" style="width: 250px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>名称：</td>
+                    <td>
+                        <input type="text" id="itemName" name="itemName" class="easyui-validatebox" required="true" style="width: 250px"/>
+                        <input type="hidden" id="item_classify_code" name="classifyCode" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="dlg-buttons2">
+        <a href="javascript:saveDictItem()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+        <a href="javascript:closeDictItemDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+    </div>
+</body>
+</html>

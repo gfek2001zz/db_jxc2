@@ -6,9 +6,9 @@ server:
 spring:
    datasource:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/db_jxc2?characterEncoding=utf-8
+      url: jdbc:mysql://120.79.209.66:3306/jxc_db?characterEncoding=utf-8
       username: root
-      password: 123456
+      password: Cj101H031*501
    jpa:
      hibernate.ddl-auto: update
      show-sql: true

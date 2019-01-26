@@ -40,6 +40,7 @@ function saveCustomer(){
     });
 }
 
+
 function openCustomerAddDialog(){
     $("#dlg").dialog("open").dialog("setTitle","添加客户信息");
     url="/admin/customer/save";

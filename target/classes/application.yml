@@ -1,0 +1,20 @@
+server:
+  port: 8081
+  context-path: /
+  
+
+spring:
+   datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://120.79.209.66:3306/jxc_db?characterEncoding=utf-8
+      username: root
+      password: Cj101H031*501
+   jpa:
+     hibernate.ddl-auto: update
+     show-sql: true
+   thymeleaf:
+    cache: false
+
+excel:
+  export:
+    path: /home/gao/appfile/excelExport/

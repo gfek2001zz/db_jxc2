@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.mf.JxcApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 27.041 sec - in com.mf.JxcApplicationTests
