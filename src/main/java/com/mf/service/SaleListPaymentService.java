@@ -1,6 +1,5 @@
 package com.mf.service;
 
-import com.mf.entity.SaleList;
 import com.mf.entity.SaleListPayment;
 
 public interface SaleListPaymentService {

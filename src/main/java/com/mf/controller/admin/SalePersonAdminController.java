@@ -52,4 +52,14 @@ public class SalePersonAdminController {
         resultMap.put("success", true);
         return resultMap;
     }
+
+    @RequestMapping("/totalAmount")
+    @RequiresPermissions(value = {"销售管理"})
+    public Map<String, Object> totalAmount(SalePerson salePerson) {
+        Map<String, Object> result = new HashMap<>();
+
+        
+        
+        return result;
+    }
 }
