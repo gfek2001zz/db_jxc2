@@ -106,6 +106,8 @@ public class SaleList {
     @Transient
 	private String saleDay;
 
+    private int receiverGoods;
+
 	public Integer getId() {
 		return id;
 	}
@@ -364,6 +366,14 @@ public class SaleList {
 
 	public void setAmountDiscount(float amountDiscount) {
 		this.amountDiscount = amountDiscount;
+	}
+
+	public int getReceiverGoods() {
+		return receiverGoods;
+	}
+
+	public void setReceiverGoods(int receiverGoods) {
+		this.receiverGoods = receiverGoods;
 	}
 
 	@Override

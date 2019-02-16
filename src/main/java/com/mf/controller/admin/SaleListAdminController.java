@@ -239,7 +239,18 @@ public class SaleListAdminController {
         }
 		return resultMap;
 	}
-	
+
+	@RequestMapping("/updateReceiverGoods")
+	@RequiresPermissions(value = "销售单据查询")
+	public Map<String, Object> updateReceiverGoods(Integer id) throws Exception {
+		Map<String,Object> resultMap=new HashMap<>();
+		SaleList saleList=saleListService.findById(id);
+		saleList.setReceiverGoods(1);
+		saleListService.update(saleList);
+		resultMap.put("success", true);
+		return resultMap;
+	}
+
 	/**
 	 * 按日统计分析
 	 * @return
@@ -277,7 +288,7 @@ public class SaleListAdminController {
 		resultMap.put("success", true);
 		return resultMap;
 	}
-	
+
 	/**
 	 * 按月统计分析
 	 * @return
@@ -324,6 +335,12 @@ public class SaleListAdminController {
 		File excelFile = excelExportTask.startExport("sale", saleList);
 
 		DownloadUtil.response(excelFile, httpResponse);
+	}
+
+	@RequestMapping("/confirmReceiverGoods")
+	@RequiresPermissions(value = "销售单据查询")
+	public void confirmReceiverGoods() {
+
 	}
 
 }

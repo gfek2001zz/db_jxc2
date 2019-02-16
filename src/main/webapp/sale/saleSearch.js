@@ -192,3 +192,31 @@ function exportSale() {
 
     form.remove();
 }
+
+function confirmReceiverGoods() {
+    var selectedRows=$("#dg").datagrid("getSelections");
+    if(selectedRows.length!=1){
+        $.messager.alert("系统提示","请选择一条要确认收货的销售单！");
+        return;
+    }
+
+    var id = selectedRows[0].id;
+    var receiverGoods = selectedRows[0].receiverGoods;
+    if (receiverGoods === 0) {
+        $.post("/admin/saleList/updateReceiverGoods",{id: id},function(result){
+            $("#dg").datagrid("reload");
+            $("#dg2").datagrid("reload");
+        }, 'json');
+    } else {
+        $.messager.alert("系统提示","选择的销售单已确认收货！");
+    }
+
+}
+
+function formatReceiverGoods(val, row) {
+    if (val) {
+        return '已收货'
+    } else {
+        return '未收货'
+    }
+}
