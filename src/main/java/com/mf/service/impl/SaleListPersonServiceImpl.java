@@ -22,6 +22,11 @@ public class SaleListPersonServiceImpl implements SaleListPersonService {
     }
 
     @Override
+    public Float findSaleAmountBySalePerson(Integer salePersonId) {
+        return saleListPersonRepository.findSaleAmountBySalePerson(salePersonId);
+    }
+
+    @Override
     public void delete(Integer saleId) {
         saleListPersonRepository.deleteBySaleListId(saleId);
     }

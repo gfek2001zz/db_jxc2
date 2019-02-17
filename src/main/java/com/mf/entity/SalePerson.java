@@ -19,6 +19,10 @@ public class SalePerson {
     private String name;
 
 
+    @Transient
+    private Float amount;
+
+
     public Integer getId() {
         return id;
     }
@@ -41,5 +45,13 @@ public class SalePerson {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Float amount) {
+        this.amount = amount;
     }
 }

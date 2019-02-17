@@ -9,5 +9,7 @@ public interface SaleListPersonService {
 
     List<SaleListPerson> findListBySaleListId(SaleList saleList);
 
+    Float findSaleAmountBySalePerson(Integer salePersonId);
+
     void delete(Integer saleId);
 }

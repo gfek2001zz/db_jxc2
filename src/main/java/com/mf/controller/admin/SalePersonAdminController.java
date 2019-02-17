@@ -3,6 +3,7 @@ package com.mf.controller.admin;
 import com.mf.entity.Log;
 import com.mf.entity.SalePerson;
 import com.mf.service.LogService;
+import com.mf.service.SaleListPersonService;
 import com.mf.service.SalePersonService;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin/salePerson")
@@ -23,6 +25,9 @@ public class SalePersonAdminController {
 
     @Resource
     private SalePersonService salePersonService;
+
+    @Resource
+    private SaleListPersonService saleListPersonService;
 
     @Resource
     private LogService logService;
@@ -55,11 +60,26 @@ public class SalePersonAdminController {
 
     @RequestMapping("/totalAmount")
     @RequiresPermissions(value = {"销售管理"})
-    public Map<String, Object> totalAmount(SalePerson salePerson) {
-        Map<String, Object> result = new HashMap<>();
+    public Map<String, Object> totalAmount(SalePerson salePerson, @RequestParam(value="page",required=false)Integer page, @RequestParam(value="rows",required=false)Integer rows)throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
 
-        
-        
-        return result;
+        List<SalePerson> salePersonList = salePersonService.list(salePerson, page, rows,
+                Sort.Direction.DESC, "id");
+
+
+        salePersonList = salePersonList.stream()
+                .map(salePersonVO -> this.setTotalAmount(salePersonVO)).collect(Collectors.toList());
+
+
+        resultMap.put("rows", salePersonList);
+        return resultMap;
+    }
+
+
+    private SalePerson setTotalAmount(SalePerson salePerson) {
+        salePerson.setAmount(saleListPersonService.findSaleAmountBySalePerson(salePerson.getId()));
+
+        return salePerson;
+
     }
 }

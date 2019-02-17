@@ -78,7 +78,9 @@ public class SaleList {
 
 	
 	private Integer state; // 交易状态 1 已付 2 未付
-	
+
+	private int receiverGoods;
+
 	@ManyToOne
 	@JoinColumn(name="userId")
 	private User user; // 操作员
@@ -105,8 +107,6 @@ public class SaleList {
 
     @Transient
 	private String saleDay;
-
-    private int receiverGoods;
 
 	public Integer getId() {
 		return id;

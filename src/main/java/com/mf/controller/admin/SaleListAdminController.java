@@ -143,7 +143,17 @@ public class SaleListAdminController {
             saleList1.setSaleListPerson(buffer.toString());
         }
 
-		resultMap.put("rows", saleListList);
+        List<SaleList> footerMapList = new ArrayList<>();
+
+
+//		SaleList footerVO = new SaleList();
+//		footerVO.setAmountPaid(2343.23f);
+//
+//		footerMapList.add(footerVO);
+//
+//		resultMap.put("footer", footerMapList);
+
+//		resultMap.put("rows", saleListList);
 		logService.save(new Log(Log.SEARCH_ACTION,"销售单查询"));
 		return resultMap;
 	}

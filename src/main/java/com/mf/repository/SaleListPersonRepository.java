@@ -18,8 +18,12 @@ public interface SaleListPersonRepository extends JpaRepository<SaleListPerson, 
      * @return
      */
     @Query(value="select * FROM t_sale_list_person t, t_sale_person u WHERE t.sale_person_id = u.id AND sale_id=?1",nativeQuery=true)
-    @Modifying
     public List<SaleListPerson> findListBySaleListId(Integer saleListId);
+
+
+    @Query(value = "select ifnull(sum(t.amount), 0) as amount from t_sale_list_person t where t.sale_person_id = ?1", nativeQuery = true)
+    public Float findSaleAmountBySalePerson(Integer salePersonId);
+
     /**
      * 根据销售单id删除所有销售单商品
      * @param saleListId
