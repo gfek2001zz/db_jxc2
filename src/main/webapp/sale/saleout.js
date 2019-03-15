@@ -134,7 +134,9 @@ function openSaleListGoodsAddDialog(){
 
 function searchGoods(){
     $("#dg2").datagrid('load',{
-        "codeOrName":$("#s_codeOrName").val()
+        "codeOrName":$("#s_codeOrName").val(),
+        'model': $("#s_model").val(),
+        'size': $("#s_size").val()
     });
 }
 
