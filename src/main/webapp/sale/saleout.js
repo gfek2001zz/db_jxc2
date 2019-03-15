@@ -86,18 +86,23 @@ function setSaleListAmount(){
     var rows=$("#dg").datagrid("getRows");
     var amount=0;
     var amountCostPrice=0;
+    var amountPaid=0;
     for(var i=0;i<rows.length;i++){
         var row=rows[i];
         amount+=row.total;
         amountCostPrice +=row.totalCost;
+        amountPaid +=row.totalAmountPaid;
     }
     $("#amountPayable").numberbox('setValue', amount.toFixed(2));
-    $("#amountPaid").numberbox('setValue', amount.toFixed(2));
+    $("#amountPaid").numberbox('setValue', amountPaid.toFixed(2));
     $('#amountEarnest').numberbox('setValue', 0);
     $('#amountFinalPayment').numberbox('setValue', amount.toFixed(2));
     $('#amountDiscount').numberbox('setValue', 0);
-    $('#amountDiscountRate').val('0%');
 
+
+    // $('#amountDiscountRate').val('0%');
+
+    discountCalculation();
 
     $('#amountCostPrice').val(amountCostPrice.toFixed(2))
 }
@@ -163,6 +168,7 @@ function openGoodsChooseDialog(){
 function resetValue(){
     $("#price").numberbox("setValue","");
     $("#num").numberbox("setValue","");
+    $("#amountPaid_s").numberbox("setValue","");
 }
 
 function saveGoods(type){
@@ -175,18 +181,22 @@ function saveGoods(type){
         var row=selectedRows[0];
         var price=$("#price").numberbox("getValue");
         var costPrice =$('#costPrice').val();
+        var amountPaid = $('#amountPaid_s').val();
         var num=$("#num").numberbox("getValue");
         var total=price*num;
         var totalCost = costPrice*num;
+        var totalAmountPaid = amountPaid*num;
         $("#dg").datagrid("appendRow",{
             code:row.code,
             name:row.name,
             model:row.model,
             size:row.size,
             price:price,
+            amountPaid: amountPaid,
             num:num,
             total:total,
             totalCost:totalCost,
+            totalAmountPaid: totalAmountPaid,
             typeId:row.type.id,
             goodsId:row.id,
             sellingPrice:row.sellingPrice
@@ -197,8 +207,10 @@ function saveGoods(type){
         var row=selectedRows[0];
         var price=$("#price").numberbox("getValue");
         var costPrice =$('#costPrice').val();
+        var amountPaid = $('#amountPaid_s').val();
         var num=$("#num").numberbox("getValue");
         var totalCost = costPrice*num;
+        var totalAmountPaid = amountPaid*num;
         var total=price*num;
         $("#dg").datagrid("updateRow",{
             index:rowIndex,
@@ -208,9 +220,11 @@ function saveGoods(type){
                 model:row.model,
                 unit:row.unit,
                 price:price,
+                amountPaid: amountPaid,
                 num:num,
                 total:total,
                 totalCost:totalCost,
+                totalAmountPaid: totalAmountPaid,
                 typeId:row.typeId,
                 goodsId:row.id,
                 sellingPrice:row.sellingPrice
@@ -395,6 +409,32 @@ function closeUserDialog() {
     $('#dlg5').dialog('close');
 }
 
+function discountCalculation() {
+    var amountPaid = $('#amountPaid').val() ? parseFloat($('#amountPaid').val()) : 0;
+    var amountEarnest = $("#amountEarnest").val() ? parseFloat($("#amountEarnest").val()) : 0;
+    var amountPayable = $("#amountPayable").val() ? parseFloat($("#amountPayable").val()) : 0;
+
+    if (amountPayable >= amountPaid) {
+        var amountFinalPayment = amountPaid - amountEarnest;
+        var amountDiscount = amountPayable - amountPaid;
+        var amountDiscountRate = (amountDiscount / amountPayable) * 100;
+
+        $("#amountDiscount").numberbox('setValue', amountDiscount);
+        $("#amountDiscountRate").val(amountDiscountRate.toFixed(2) + "%");
+
+        if (amountFinalPayment > -1) {
+            $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
+        } else {
+            $.messager.alert("系统提示","实收定金不能大于成交价！");
+            $("#amountEarnest").numberbox('setValue', '');
+        }
+    } else {
+        $.messager.alert("系统提示","成交价不能大于统一零售价！");
+        $("#amountPaid").numberbox('setValue', '');
+        $("#amountEarnest").numberbox('setValue', '');
+    }
+}
+
 $(document).ready(function() {
 
     $("#saleDate").datebox("setValue",genTodayStr());
@@ -442,55 +482,7 @@ $(document).ready(function() {
     });
 
 
-    $("#amountPaid").change(function() {
-        var amountPaid = $(this).val() ? parseFloat($(this).val()) : 0;
-        var amountEarnest = $("#amountEarnest").val() ? parseFloat($("#amountEarnest").val()) : 0;
-        var amountPayable = $("#amountPayable").val() ? parseFloat($("#amountPayable").val()) : 0;
-        var amountDiscount = $("#amountDiscount").val() ? parseFloat($('#amountDiscount').val()) : 0;
-        var amountDiscountRate = $('#amountDiscountRate').val() ? parseFloat($('#amountDiscountRate').val()) : "0%";
-
-        if (amountPayable >= amountPaid) {
-            var amountFinalPayment = amountPaid - amountEarnest;
-            var amountDiscount = amountPayable - amountPaid;
-            var amountDiscountRate = (amountDiscount / amountPayable) * 100;
-
-            $("#amountDiscount").numberbox('setValue', amountDiscount);
-            $("#amountDiscountRate").val(amountDiscountRate.toFixed(2) + "%");
-
-            if (amountFinalPayment > -1) {
-                $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
-            } else {
-                $.messager.alert("系统提示","实收定金不能大于成交价！");
-                $("#amountEarnest").numberbox('setValue', '');
-            }
-        } else {
-            $.messager.alert("系统提示","成交价不能大于统一零售价！");
-            $("#amountPaid").numberbox('setValue', '');
-            $("#amountEarnest").numberbox('setValue', '');
-        }
-
-    });
-
-    $("#amountEarnest").change(function() {
-        var amountEarnest = $(this).val() ? parseFloat($(this).val()) : 0;
-        var amountPaid = $("#amountPaid").val() ? parseFloat($("#amountPaid").val()) : 0;
-        var amountPayable = $("#amountPayable").val() ? parseFloat($("#amountPayable").val()) : 0;
-
-        if (amountPayable >= amountPaid) {
-            var amountFinalPayment = amountPaid - amountEarnest;
-
-            if (amountFinalPayment > -1) {
-                $("#amountFinalPayment").numberbox('setValue', amountFinalPayment);
-            } else {
-                $.messager.alert("系统提示","实收定金不能大于成交价！");
-                $("#amountEarnest").numberbox('setValue', '');
-            }
-        } else {
-            $.messager.alert("系统提示","成交价不能大于统一零售价！");
-            $("#amountPaid").numberbox('setValue', '');
-            $("#amountEarnest").numberbox('setValue', '');
-        }
-
-    });
+    $("#amountPaid").change(discountCalculation);
+    $("#amountEarnest").change(discountCalculation);
 
 });

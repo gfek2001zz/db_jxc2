@@ -196,14 +196,15 @@
 	</div>
 	<div data-options="region:'center'" style="padding: 10px;border: 1px">
 		<table id="dg"  class="easyui-datagrid" style="height: 1200px"
-			fitColumns="true" rownumbers="true" singleSelect="true"
+			fitColumns="false" rownumbers="true" singleSelect="true"
 			 fit="true" toolbar="#tb">
 				<thead>
-					<th field="model" width="50" align="center">商品型号</th>
-					<th field="size" width="50" align="center">尺寸</th>
-					<th field="num" width="50" align="center">数量</th>
-					<th field="price" width="50" align="center">单价</th>
-					<th field="total" width="50" align="center">总金额</th>
+					<th field="model" width="150" align="center">商品型号</th>
+					<th field="size" width="150" align="center">尺寸</th>
+					<th field="num" width="150" align="center">数量</th>
+					<th field="price" width="150" align="right">零售价</th>
+					<th field="amountPaid" width="150" align="right">成交价</th>
+					<th field="totalAmountPaid" width="150" align="right">总金额</th>
                     <th field="totalCost" hidden="true" width="50" align="center">成本价</th>
 				</thead>
 			</table>
@@ -304,13 +305,13 @@
 							<input type="text" id="price" name="price" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>
                             <input type="hidden" id="costPrice" name="costPrice" />
 						</td>
-                        <!--<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;成本价：</td>-->
-                        <!--<td>-->
-                            <!--<input type="text" id="costPrice" name="costPrice" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>-->
-                        <!--</td>-->
 						<td align="right" width="60">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量：</td>
 						<td>
 							<input type="text" id="num" name="num" class="easyui-numberbox" data-options="min:1" required="true" size="10"/>
+						</td>
+						<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;成交价：</td>
+						<td>
+							<input type="text" id="amountPaid_s" name="amountPaid" class="easyui-numberbox" data-options="min:0,precision:2" required="true" size="10"/>
 						</td>
 					</tr>
 				</table>
