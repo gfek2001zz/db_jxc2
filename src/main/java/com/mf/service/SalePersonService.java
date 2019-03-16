@@ -12,4 +12,8 @@ public interface SalePersonService {
     Long getCount(SalePerson salePerson);
 
     void save(SalePerson salePerson);
+
+    void delete(SalePerson salePerson);
+
+    public SalePerson findById(int typeId);
 }

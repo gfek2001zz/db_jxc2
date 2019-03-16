@@ -56,3 +56,32 @@ function resetValue() {
 function formatterShopName(val, row) {
     return val.name + "-" + val.name2;
 }
+
+function deleteSalePerson() {
+    var selectedRows=$("#dg").datagrid("getSelections");
+    if(selectedRows.length!=1){
+        $.messager.alert("系统提示","请选择一条要删除的数据！");
+        return;
+    }
+    var id=selectedRows[0].id;
+    $.messager.confirm("系统提示","您确定要删除这条数据吗?",function(r){
+        if(r){
+            $.post("/admin/salePerson/delete",{id:id},function(result){
+                if(result.success){
+                    $("#dg").datagrid("reload");
+                }else{
+                    $.messager.alert("系统提示",result.errorInfo);
+                }
+            },"json");
+        }
+    });
+}
+
+function openSalePersonDialog() {
+}
+
+function searchSalePerson() {
+    $("#dg").datagrid('load',{
+        "name":$("#s_name").val()
+    });
+}

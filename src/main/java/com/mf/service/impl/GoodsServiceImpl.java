@@ -55,6 +55,13 @@ public class GoodsServiceImpl implements GoodsService{
 					if(StringUtil.isNotEmpty(goods.getCodeOrName())){
 						predicate.getExpressions().add(cb.or(cb.like(root.get("code"), "%"+goods.getCodeOrName()+"%"), cb.like(root.get("name"), "%"+goods.getCodeOrName()+"%")));
 					}
+					if(StringUtil.isNotEmpty(goods.getModel())) {
+						predicate.getExpressions().add(cb.like(root.get("model"), "%"+goods.getModel()+"%"));
+					}
+					if(StringUtil.isNotEmpty(goods.getSize())) {
+						predicate.getExpressions().add(cb.like(root.get("size"), "%"+goods.getSize()+"%"));
+					}
+
 				}
 				return predicate;
 			}

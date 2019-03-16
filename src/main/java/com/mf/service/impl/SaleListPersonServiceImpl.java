@@ -30,4 +30,9 @@ public class SaleListPersonServiceImpl implements SaleListPersonService {
     public void delete(Integer saleId) {
         saleListPersonRepository.deleteBySaleListId(saleId);
     }
+
+    @Override
+    public long countSalePersonBind(Integer saleId) {
+        return saleListPersonRepository.countSalePersonBind(saleId);
+    }
 }

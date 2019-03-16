@@ -176,6 +176,7 @@ public class SaleListAdminController {
 			sl.setSaleListGoodsList(slgList);
 		}
 		resultMap.put("rows", saleListList);
+		resultMap.put("total", saleListService.getCount(saleList));
 		logService.save(new Log(Log.SEARCH_ACTION,"商品销售统计查询"));
 		return resultMap;
 	}

@@ -12,4 +12,6 @@ public interface SaleListPersonService {
     Float findSaleAmountBySalePerson(Integer salePersonId);
 
     void delete(Integer saleId);
+
+    long countSalePersonBind(Integer saleId);
 }

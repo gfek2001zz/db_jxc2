@@ -33,4 +33,9 @@ public interface SaleListPersonRepository extends JpaRepository<SaleListPerson, 
     @Query(value="delete FROM t_sale_list_person WHERE sale_id=?1",nativeQuery=true)
     @Modifying
     public void deleteBySaleListId(Integer saleListId);
+
+
+
+    @Query(value = "select count(1) from t_sale_list_person t where t.sale_id=?1", nativeQuery=true)
+    public long countSalePersonBind(Integer saleId);
 }

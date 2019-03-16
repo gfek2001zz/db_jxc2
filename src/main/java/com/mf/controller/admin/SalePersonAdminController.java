@@ -40,6 +40,7 @@ public class SalePersonAdminController {
         List<SalePerson> salePersonList = salePersonService.list(salePerson, page, rows,
                 Sort.Direction.DESC, "id");
         resultMap.put("rows", salePersonList);
+        resultMap.put("total", salePersonService.getCount(salePerson));
 
         return resultMap;
     }
@@ -72,6 +73,25 @@ public class SalePersonAdminController {
 
 
         resultMap.put("rows", salePersonList);
+        return resultMap;
+    }
+
+    @RequestMapping("/delete")
+    @RequiresPermissions(value = {"销售管理"})
+    public Map<String,Object> delete(Integer id)throws Exception{
+        Map<String,Object> resultMap=new HashMap<>();
+        long count = saleListPersonService.countSalePersonBind(id);
+        if (count > 0) {
+            resultMap.put("success", false);
+            resultMap.put("errorInfo", "该销售员已产生交易，不能删除");
+        } else {
+            SalePerson salePerson = new SalePerson();
+            salePerson.setId(id);
+            salePersonService.delete(salePerson);
+            resultMap.put("success", true);
+        }
+
+
         return resultMap;
     }
 

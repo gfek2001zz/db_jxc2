@@ -2,6 +2,7 @@ package com.mf.service.impl;
 
 import com.mf.entity.SalePerson;
 import com.mf.repository.SalePersonRepository;
+import com.mf.service.SaleListPersonService;
 import com.mf.service.SalePersonService;
 import com.mf.util.StringUtil;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,16 @@ public class SalePersonServiceImpl implements SalePersonService {
     @Override
     public void save(SalePerson salePerson) {
         salePersonRepository.save(salePerson);
+    }
+
+    @Override
+    public void delete(SalePerson salePerson) {
+        salePersonRepository.delete(salePerson.getId());
+    }
+
+    @Override
+    public SalePerson findById(int id) {
+        return salePersonRepository.findOne(id);
     }
 
 
