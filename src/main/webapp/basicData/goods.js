@@ -118,7 +118,9 @@ function formatSellingPrice(val,row){
 
 function searchGoods(){
     $("#dg").datagrid('reload',{
-        "name":$("#s_name").val()
+        "name":$("#s_name").val(),
+        'model':$("#s_model").val(),
+        'size':$('#s_size').val()
     });
 }
 
