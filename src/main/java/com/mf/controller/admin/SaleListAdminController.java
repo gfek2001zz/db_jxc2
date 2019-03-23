@@ -132,28 +132,19 @@ public class SaleListAdminController {
 
 		List<SaleList> saleListList=saleListService.list(saleList, page, rows, Direction.DESC, "saleDate");
 		for (SaleList saleList1 : saleListList) {
-            List<SaleListPerson> saleListPeople = saleListPersonService.findListBySaleListId(saleList1);
+			List<SaleListPerson> saleListPeople = saleListPersonService.findListBySaleListId(saleList1);
 
-            StringBuffer buffer = new StringBuffer();
-            for (SaleListPerson saleListPerson : saleListPeople) {
-                buffer.append(saleListPerson.getSalePerson().getName()).append(":")
-                        .append(saleListPerson.getAmount() * 100 / 100.0F).append(";");
-            }
+			StringBuffer buffer = new StringBuffer();
+			for (SaleListPerson saleListPerson : saleListPeople) {
+				buffer.append(saleListPerson.getSalePerson().getName()).append(":")
+						.append(saleListPerson.getAmount() * 100 / 100.0F).append(";");
+			}
 
-            saleList1.setSaleListPerson(buffer.toString());
-        }
+			saleList1.setSaleListPerson(buffer.toString());
+		}
 
-        List<SaleList> footerMapList = new ArrayList<>();
-
-
-//		SaleList footerVO = new SaleList();
-//		footerVO.setAmountPaid(2343.23f);
-//
-//		footerMapList.add(footerVO);
-//
-//		resultMap.put("footer", footerMapList);
-
-//		resultMap.put("rows", saleListList);
+		resultMap.put("rows", saleListList);
+		resultMap.put("total", saleListService.getCount(saleList));
 		logService.save(new Log(Log.SEARCH_ACTION,"销售单查询"));
 		return resultMap;
 	}
