@@ -57,10 +57,10 @@
 			<th field="customerName" width="100" align="center">客户</th>
 			<th field="customerTelphone" width="100" align="center">地址</th>
 			<th field="customerAddress" width="100" align="center">电话</th>
-
 			<th field="contractNumber" width="80" align="center">合同编号</th>
 			<th field="amountPayable" width="80" align="right" formatter="formatAmountPayable">统一零售价</th>
 			<th field="amountPaid" width="60" align="right" formatter="formatAmountPayable">成交价</th>
+			<th field="amountCostPrice" width="60" align="right" formatter="formatAmountPayable">成本价</th>
 			<th field="amountDiscount" width="60" align="right" formatter="formatAmountPayable">优惠金额</th>
             <th field="amountDiscountRate" width="60" align="right">折扣</th>
 			<th field="amountEarnest" width="60" align="right" formatter="formatAmountPayable">实收定金</th>
@@ -100,7 +100,7 @@
 				&nbsp;&nbsp;<a href="javascript:deleteSale()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">删除</a>
 				&nbsp;&nbsp;<a href="javascript:modifyAmount()" class="easyui-linkbutton" iconCls="icon-save" plain="true">收尾款</a>
 				&nbsp;&nbsp;<a href="javascript:exportSale()" class="easyui-linkbutton" iconCls="icon-save" plain="true">导出</a>
-				&nbsp;&nbsp;<a href="javascript:confirmReceiverGoods()" class="easyui-linkbutton" iconCls="icon-save" plain="true">确认收货</a>
+				&nbsp;&nbsp;<a href="javascript:confirmReceiverGoods()" class="easyui-linkbutton" iconCls="icon-save" plain="true">确认送货</a>
 			</span>
 		</fieldset>
 	</div>
@@ -116,6 +116,8 @@
 				<th field="num" width="50" align="center">数量</th>
 				<th field="price" width="50" align="right" formatter="formatPrice">单价</th>
 				<th field="total" width="50" align="right" formatter="formatTotal">总金额</th>
+				<th field="discount" width="50" align="right" formatter="formatPrice">优惠金额</th>
+				<th field="discountRate" width="50" align="right">折扣率</th>
 			</thead>
 	</table>
  </div>
@@ -142,9 +144,34 @@
 	 </fieldset>
  </div>
 
+ <div id="dlg2" class="easyui-dialog" style="width: 400px;height: 220px;padding: 20px"
+	  closed="true" buttons="#dlg2-buttons" >
+
+	 <fieldset style="border-color: #E7F0FF">
+		 <legend>送货时间</legend>
+		 <form id="fm2" method="post">
+			 <div class="frm-container">
+
+				 <div class="frm-field">
+					 <span class="frm-label">送货时间：</span>
+					 <span class="frm-control">
+						<input type="text" id="deliveryDate" name="deliveryDate" class="easyui-datebox" style="width: 180px" />
+					</span>
+				 </div>
+			 </div>
+		 </form>
+	 </fieldset>
+ </div>
+
  <div id="dlg-buttons">
 	 <a href="javascript:saveUserAmount()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
 	 <a href="javascript:closeUserAmountDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
+ </div>
+
+
+ <div id="dlg2-buttons">
+	 <a href="javascript:saveDeliveryDate()" class="easyui-linkbutton" iconCls="icon-ok" >保存</a>
+	 <a href="javascript:closeDeliveryDateDialog()" class="easyui-linkbutton" iconCls="icon-cancel" >关闭</a>
  </div>
 
 </body>

@@ -194,6 +194,13 @@ function exportSale() {
 }
 
 function confirmReceiverGoods() {
+
+    $("#dlg2").dialog("open").dialog("setTitle","确认送货");
+
+}
+
+function saveDeliveryDate() {
+
     var selectedRows=$("#dg").datagrid("getSelections");
     if(selectedRows.length!=1){
         $.messager.alert("系统提示","请选择一条要确认收货的销售单！");
@@ -202,15 +209,21 @@ function confirmReceiverGoods() {
 
     var id = selectedRows[0].id;
     var receiverGoods = selectedRows[0].receiverGoods;
+    var deliveryDate = $("#deliveryDate").datebox("getValue");
     if (receiverGoods === 0) {
-        $.post("/admin/saleList/updateReceiverGoods",{id: id},function(result){
+        $.post("/admin/saleList/updateReceiverGoods",{id: id, deliveryDate:deliveryDate},function(result){
             $("#dg").datagrid("reload");
             $("#dg2").datagrid("reload");
+
+            closeDeliveryDateDialog();
         }, 'json');
     } else {
         $.messager.alert("系统提示","选择的销售单已确认收货！");
     }
+}
 
+function closeDeliveryDateDialog() {
+    $("#dlg2").dialog("close");
 }
 
 function formatReceiverGoods(val, row) {

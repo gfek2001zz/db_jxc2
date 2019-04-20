@@ -244,11 +244,16 @@ public class SaleListAdminController {
 
 	@RequestMapping("/updateReceiverGoods")
 	@RequiresPermissions(value = "销售单据查询")
-	public Map<String, Object> updateReceiverGoods(Integer id) throws Exception {
+	public Map<String, Object> updateReceiverGoods(SaleList srcSaleList) throws Exception {
 		Map<String,Object> resultMap=new HashMap<>();
-		SaleList saleList=saleListService.findById(id);
+		SaleList saleList=saleListService.findById(srcSaleList.getId());
 		saleList.setReceiverGoods(1);
+		saleList.setDeliveryDate(srcSaleList.getDeliveryDate());
 		saleListService.update(saleList);
+
+		//修改商品库存
+		saleListService.refreshGoodsNum(saleList);
+
 		resultMap.put("success", true);
 		return resultMap;
 	}

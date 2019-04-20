@@ -75,4 +75,6 @@ public interface SaleListService {
 	 */
 	public List<Object> countSaleByMonth(String begin,String end);
 
+	void refreshGoodsNum(SaleList saleList);
+
 }

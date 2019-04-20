@@ -60,13 +60,6 @@ public class SaleListServiceImpl implements SaleListService{
 			saleListGoods.setType(goodsTypeRepository.findOne(saleListGoods.getTypeId())); // 设置类别
 			saleListGoods.setSaleList(saleList); // 设置销售单
 			saleListGoodsRepository.save(saleListGoods);
-
-			//取消
-			// 修改商品库存
-//			Goods goods=goodsRepository.findOne(saleListGoods.getGoodsId());
-//			goods.setInventoryQuantity(goods.getInventoryQuantity()-saleListGoods.getNum());
-//			goods.setState(2);
-//			goodsRepository.save(goods);
 		}
 
 		for(SaleListPerson person : saleListPersonList) {
@@ -75,6 +68,17 @@ public class SaleListServiceImpl implements SaleListService{
 		}
 
 		saleListRepository.save(saleList); // 保存销售单
+	}
+
+	public void refreshGoodsNum(SaleList saleList) {
+		List<SaleListGoods> saleListGoodsList = saleListGoodsRepository.listBySaleListId(saleList.getId());
+		for(SaleListGoods saleListGoods:saleListGoodsList) {
+
+			Goods goods = goodsRepository.findOne(saleListGoods.getGoodsId());
+			goods.setInventoryQuantity(goods.getInventoryQuantity() - saleListGoods.getNum());
+			goods.setState(2);
+			goodsRepository.save(goods);
+		}
 	}
 
 	@Override
