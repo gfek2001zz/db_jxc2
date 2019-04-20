@@ -369,6 +369,13 @@ function openChooseGoodsModeDialog() {
         $("#dg6").datagrid('load',{
             "classifyCode": "MATTRESS_MODE"
         });
+    } else {
+        var classifyCode = getTypeNameToCode("MODEL");
+        $("#dlg6").dialog("open").dialog("setTitle","选择商品型号");
+        $("#dg6").datagrid('load',{
+            "classifyCode": classifyCode
+        });
+
     }
 
     $("#chooseSave").unbind();
@@ -401,15 +408,27 @@ function openChooseGoodsBrandDialog() {
     })
 }
 
-function openChooseGoodsStyleDialog() {
-    $("#dlg6").dialog("open").dialog("setTitle","选择商品款式");
+
+function getTypeNameToCode(classifyType) {
     var typeName = $("#typeName").val();
     if (typeName == "皮床") {
-        var classifyCode = "BED_STYLE";
-
+        var classifyCode = "BED";
     } else if (typeName == "床垫") {
-        var classifyCode = "MATTRESS_STYLE";
+        var classifyCode = "MATTRESS";
+    } else if (typeName == "床护套") {
+        var classifyCode = "SHEATH";
+    } else if (typeName == "枕头") {
+        var classifyCode = "PILLOW";
+    } else if (typeName == "赠品") {
+        var classifyCode = "GIFT"
     }
+
+    return classifyCode + "_" + classifyType;
+}
+
+function openChooseGoodsStyleDialog() {
+    $("#dlg6").dialog("open").dialog("setTitle","选择商品款式");
+    var classifyCode = getTypeNameToCode("STYLE");
 
 
     $("#dg6").datagrid('load',{
@@ -425,13 +444,7 @@ function openChooseGoodsStyleDialog() {
 
 function openChooseGoodsColorDialog() {
     $("#dlg6").dialog("open").dialog("setTitle","选择商品颜色");
-    var typeName = $("#typeName").val();
-    if (typeName == "皮床") {
-        var classifyCode = "BED_COLOR";
-
-    } else if (typeName == "床垫") {
-        var classifyCode = "MATTRESS_COLOR";
-    }
+    var classifyCode = getTypeNameToCode("COLOR");
 
 
     $("#dg6").datagrid('load',{
