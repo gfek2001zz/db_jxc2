@@ -60,11 +60,13 @@ public class SaleListServiceImpl implements SaleListService{
 			saleListGoods.setType(goodsTypeRepository.findOne(saleListGoods.getTypeId())); // 设置类别
 			saleListGoods.setSaleList(saleList); // 设置销售单
 			saleListGoodsRepository.save(saleListGoods);
+
+			//取消
 			// 修改商品库存
-			Goods goods=goodsRepository.findOne(saleListGoods.getGoodsId());
-			goods.setInventoryQuantity(goods.getInventoryQuantity()-saleListGoods.getNum());
-			goods.setState(2);
-			goodsRepository.save(goods);
+//			Goods goods=goodsRepository.findOne(saleListGoods.getGoodsId());
+//			goods.setInventoryQuantity(goods.getInventoryQuantity()-saleListGoods.getNum());
+//			goods.setState(2);
+//			goodsRepository.save(goods);
 		}
 
 		for(SaleListPerson person : saleListPersonList) {
@@ -97,7 +99,7 @@ public class SaleListServiceImpl implements SaleListService{
 			saleList1.setAmountFinalPayment(saleList1.getAmountPaid() - saleList1.getAmountBalance());
 			saleList1.setAmountDiscount(saleList1.getAmountPayable() - saleList1.getAmountPaid());
 
-			Float amountDiscountRate = Math.round(saleList1.getAmountDiscount() / saleList1.getAmountPayable() * 100.0F) / 100.0F;
+			Float amountDiscountRate = Math.round(saleList1.getAmountDiscount() / saleList1.getAmountPayable() * 10000.0F) / 100.0F;
 			saleList1.setAmountDiscountRate(amountDiscountRate + "%");
 		}
 
@@ -119,9 +121,6 @@ public class SaleListServiceImpl implements SaleListService{
 		if(saleList!=null){
 			if(StringUtil.isNotEmpty(saleList.getContractNumber())){
 				predicate.getExpressions().add(cb.like(root.get("contractNumber"), "%"+saleList.getContractNumber().trim()+"%"));
-			}
-			if(saleList.getCustomer()!=null && saleList.getCustomer().getId()!=null){
-				predicate.getExpressions().add(cb.equal(root.get("customer").get("id"), saleList.getCustomer().getId()));
 			}
 			if(saleList.getState()!=null){
 				predicate.getExpressions().add(cb.equal(root.get("state"), saleList.getState()));

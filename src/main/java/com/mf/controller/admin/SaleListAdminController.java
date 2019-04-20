@@ -137,7 +137,7 @@ public class SaleListAdminController {
 			StringBuffer buffer = new StringBuffer();
 			for (SaleListPerson saleListPerson : saleListPeople) {
 				buffer.append(saleListPerson.getSalePerson().getName()).append(":")
-						.append(saleListPerson.getAmount() * 100 / 100.0F).append(";");
+						.append(saleListPerson.getAmount() * 10000 / 100.0F).append(";");
 			}
 
 			saleList1.setSaleListPerson(buffer.toString());

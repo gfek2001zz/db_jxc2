@@ -17,6 +17,7 @@ $(document).ready(function() {
 });
 
 function saveSaleGoods(){
+    debugger;
     $("#saleNumber").val($("#dh").text());
     $("#goodsJson").val(JSON.stringify($("#dg").datagrid("getData").rows));
     $("#fm").form("submit",{
@@ -89,10 +90,11 @@ function setSaleListAmount(){
     var amountPaid=0;
     for(var i=0;i<rows.length;i++){
         var row=rows[i];
-        amount+=row.total;
-        amountCostPrice +=row.totalCost;
-        amountPaid +=row.totalAmountPaid;
+        amount+=parseFloat(row.total);
+        amountCostPrice +=parseFloat(row.totalCost);
+        amountPaid +=parseFloat(row.totalAmountPaid);
     }
+    debugger;
     $("#amountPayable").numberbox('setValue', amount.toFixed(2));
     $("#amountPaid").numberbox('setValue', amountPaid.toFixed(2));
     $('#amountEarnest').numberbox('setValue', 0);
@@ -188,17 +190,24 @@ function saveGoods(type){
         var total=price*num;
         var totalCost = costPrice*num;
         var totalAmountPaid = amountPaid*num;
+
+        var discount = total - totalAmountPaid;
+        var discountRate = (discount / total) * 100;
+
         $("#dg").datagrid("appendRow",{
             code:row.code,
             name:row.name,
             model:row.model,
+            style:row.style,
             size:row.size,
             price:price,
             amountPaid: amountPaid,
             num:num,
             total:total,
             totalCost:totalCost,
-            totalAmountPaid: totalAmountPaid,
+            totalAmountPaid: totalAmountPaid.toFixed(2),
+            discount: discount,
+            discountRate: discountRate.toFixed(2),
             typeId:row.type.id,
             goodsId:row.id,
             sellingPrice:row.sellingPrice
@@ -214,19 +223,27 @@ function saveGoods(type){
         var totalCost = costPrice*num;
         var totalAmountPaid = amountPaid*num;
         var total=price*num;
+
+        var discount = total - totalAmountPaid;
+        var discountRate = (discount / total) * 100;
+
+
         $("#dg").datagrid("updateRow",{
             index:rowIndex,
             row:{
                 code:row.code,
                 name:row.name,
                 model:row.model,
+                style:row.style,
                 unit:row.unit,
                 price:price,
                 amountPaid: amountPaid,
                 num:num,
                 total:total,
                 totalCost:totalCost,
-                totalAmountPaid: totalAmountPaid,
+                discount: discount,
+                discountRate: discountRate.toFixed(2),
+                totalAmountPaid: totalAmountPaid.toFixed(2),
                 typeId:row.typeId,
                 goodsId:row.id,
                 sellingPrice:row.sellingPrice

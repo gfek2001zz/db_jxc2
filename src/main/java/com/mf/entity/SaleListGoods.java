@@ -37,6 +37,9 @@ public class SaleListGoods {
 	
 	@Column(length=50)
 	private String model; // 商品型号
+
+	@Column(length=50)
+	private String style;
 	
 	@ManyToOne
 	@JoinColumn(name="typeId")
@@ -60,6 +63,10 @@ public class SaleListGoods {
 	private float total; // 总金额
 
 	private float totalCost; //成本价
+
+	private float discount;
+
+	private float discountRate;
 	
 	@Transient
 	private String codeOrName; // 查询用到 根据商品编码或者商品名称查询
@@ -183,6 +190,30 @@ public class SaleListGoods {
 
 	public void setCodeOrName(String codeOrName) {
 		this.codeOrName = codeOrName;
+	}
+
+	public float getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(float discount) {
+		this.discount = discount;
+	}
+
+	public float getDiscountRate() {
+		return discountRate;
+	}
+
+	public void setDiscountRate(float discountRate) {
+		this.discountRate = discountRate;
+	}
+
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 	@Override

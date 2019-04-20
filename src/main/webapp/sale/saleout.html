@@ -42,7 +42,7 @@
 <script type="text/javascript" src="saleout.js"></script>
 </head>
 <body class="easyui-layout">
-	<div data-options="region:'north'" style="height: 238px;padding: 10px;border: 0px;padding-top: 20px">
+	<div data-options="region:'north'" style="height: 290px;padding: 10px;border: 0px;padding-top: 20px">
 		<fieldset style="border-color: #E7F0FF">
 			<legend>单号：<span id="dh"></span></legend>
 			<form id="fm" method="post">
@@ -58,11 +58,11 @@
 						</span>
 					</div>
 
-					<div class="frm-field">
+					<div class="frm-field" style="display: none">
 						<span class="frm-label">客户：</span>
 						<span class="frm-control">
-							<input class="easyui-combobox" id="customerId" name="customer.id" style="width: 180px" required="true"
-								   data-options="required:true,panelHeight:'auto',valueField:'id',textField:'name'"/>
+							<input class="easyui-combobox" id="customerId" name="customer.id" style="width: 180px"
+								   data-options="panelHeight:'auto',valueField:'id',textField:'name'"/>
 						</span>
 					</div>
 
@@ -78,6 +78,14 @@
 						<span class="frm-label">合同号：</span>
 						<span class="frm-control">
 							<input type="text" name="contractNumber" size="10" />
+						</span>
+					</div>
+
+
+					<div class="frm-field">
+						<span class="frm-label">销售日期：</span>
+						<span class="frm-control">
+							<input type="text" id="saleDate" name="saleDate" class="easyui-datebox" style="width: 180px" required="true" />
 						</span>
 					</div>
 				</div>
@@ -102,24 +110,6 @@
 					</div>
 
 
-					<div class="frm-field">
-						<span class="frm-label">折扣：</span>
-						<span class="frm-control">
-							<input type="text" id="amountDiscountRate" name="amountDiscountRate"  data-options="min:0,precision:2"
-								   class="easyui-validatebox" required="true" readonly="readonly" size="10"/>
-						</span>
-					</div>
-
-					<div class="frm-field">
-						<span class="frm-label">优惠金额：</span>
-						<span class="frm-control">
-							<input type="text" id="amountDiscount" name="amountdiscount"  data-options="min:0,precision:2"
-								   class="easyui-numberbox easyui-validatebox" required="true" size="10"/>
-						</span>
-					</div>
-				</div>
-
-				<div class="frm-container">
 
 					<div class="frm-field">
 						<span class="frm-label">实收定金：</span>
@@ -137,6 +127,28 @@
 						</span>
 					</div>
 
+
+					<!--客户不需要，无须展示出来-->
+					<div class="frm-field" style="display: none">
+						<span class="frm-label">折扣：</span>
+						<span class="frm-control">
+							<input type="hidden" id="amountDiscountRate" name="amountDiscountRate"  data-options="min:0,precision:2"
+								   class="easyui-validatebox" readonly="readonly" size="10"/>
+						</span>
+					</div>
+
+					<div class="frm-field" style="display: none">
+						<span class="frm-label">优惠金额：</span>
+						<span class="frm-control">
+							<input type="hidden" id="amountDiscount" name="amountdiscount"  data-options="min:0,precision:2"
+								   class="easyui-numberbox easyui-validatebox" size="10"/>
+						</span>
+					</div>
+				</div>
+
+				<div class="frm-container">
+
+
 					<div class="frm-field">
 						<span class="frm-label">工厂下单时间：</span>
 						<span class="frm-control">
@@ -145,20 +157,37 @@
 					</div>
 
 					<div class="frm-field">
+						<span class="frm-label">客户姓名：</span>
+						<span class="frm-control">
+							<input type="text" name="customerName" style="width: 180px" required="true" />
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">客户电话：</span>
+						<span class="frm-control">
+							<input type="text" name="customerTelphone" style="width: 180px" required="true" />
+						</span>
+					</div>
+
+					<div class="frm-field">
+						<span class="frm-label">客户地址：</span>
+						<span class="frm-control">
+							<input type="text" name="customerAddress" style="width: 180px" required="true" />
+						</span>
+					</div>
+
+
+					<!--客户不需要，无须展示出来-->
+					<div class="frm-field" style="display: none;">
 						<span class="frm-label">送货时间：</span>
 						<span class="frm-control">
-							<input type="text" name="deliveryDate" class="easyui-datebox" style="width: 180px" required="true" />
+							<input type="text" name="deliveryDate" class="easyui-datebox" style="width: 180px" />
 						</span>
 					</div>
 				</div>
 
 				<div class="frm-container">
-					<div class="frm-field">
-						<span class="frm-label">销售日期：</span>
-						<span class="frm-control">
-							<input type="text" id="saleDate" name="saleDate" class="easyui-datebox" style="width: 180px" required="true" />
-						</span>
-					</div>
 
 					<div class="frm-field">
 						<span class="frm-label">媒人：</span>
@@ -179,6 +208,17 @@
 						</span>
 					</div>
 				</div>
+
+
+				<div class="frm-container">
+					<div class="frm-field" style="width: 800px;">
+						<span class="frm-label">销售备注：</span>
+						<span class="frm-control" style="width: 500px;text-align: left">
+							<textarea id="saleRemark" style="width:500px;height: 30px"></textarea>
+						</span>
+					</div>
+				</div>
+
 
 				<div class="frm-control">
 					<div class="frm-field">
@@ -202,10 +242,13 @@
 				<thead>
 					<th field="model" width="150" align="center">商品型号</th>
 					<th field="size" width="150" align="center">尺寸</th>
+					<th field="style" width="150" align="center">款式</th>
 					<th field="num" width="150" align="center">数量</th>
 					<th field="price" width="150" align="right">零售价</th>
 					<th field="amountPaid" width="150" align="right">成交价</th>
 					<th field="totalAmountPaid" width="150" align="right">总金额</th>
+					<th field="discountRate" width="150" align="right">折扣率</th>
+					<th field="discount" width="150" align="right">优惠金额</th>
                     <th field="totalCost" hidden="true" width="50" align="center">成本价</th>
 				</thead>
 			</table>
@@ -248,6 +291,7 @@
 							<th field="code" width="50" align="center">商品编码</th>
 							<th field="name" width="150" align="left">商品名称</th>
 							<th field="model" width="50" align="center">商品型号</th>
+							<th field="style" width="50" align="center">商品款式</th>
 							<th field="size" width="50" align="center">尺寸</th>
 							<th field="sellingPrice" width="50" align="right" formatter="formatLastSellingPrice">统一零售价</th>
 							<th field="purchasingPrice" width="50" hidden="true" align="right" formatter="formatSellingPrice">成本均价</th>
@@ -285,6 +329,10 @@
                     </td>
 				</tr>
 				<tr>
+					<td>商品款式：</td>
+					<td>
+						<input type="text" id="style" name="style" readonly="readonly" size="10"/>
+					</td>
 					<td>商品尺寸：</td>
 					<td>
 						<input type="text" id="size" name="size" readonly="readonly" size="10"/>

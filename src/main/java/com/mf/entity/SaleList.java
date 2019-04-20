@@ -26,9 +26,9 @@ public class SaleList {
 	@Column(length=100)
 	private String saleNumber; // 销售单号
 	
-	@ManyToOne
-	@JoinColumn(name="customerId")
-	private Customer customer; // 客户
+//	@ManyToOne
+//	@JoinColumn(name="customerId")
+//	private Customer customer; // 客户
 
 	@ManyToOne
 	@JoinColumn(name="shopId")
@@ -108,6 +108,14 @@ public class SaleList {
     @Transient
 	private String saleDay;
 
+    private String customerName;
+
+    private String customerTelphone;
+
+    private String customerAddress;
+
+    private String saleRemark;
+
 	public Integer getId() {
 		return id;
 	}
@@ -122,14 +130,6 @@ public class SaleList {
 
 	public void setSaleNumber(String saleNumber) {
 		this.saleNumber = saleNumber;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
 	}
 
 	@JsonSerialize(using=CustomDateSerializer.class)
@@ -305,7 +305,39 @@ public class SaleList {
         this.amountCostPrice = amountCostPrice;
     }
 
-    public Float getGrossProfit() {
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getCustomerTelphone() {
+		return customerTelphone;
+	}
+
+	public void setCustomerTelphone(String customerTelphone) {
+		this.customerTelphone = customerTelphone;
+	}
+
+	public String getCustomerAddress() {
+		return customerAddress;
+	}
+
+	public void setCustomerAddress(String customerAddress) {
+		this.customerAddress = customerAddress;
+	}
+
+	public String getSaleRemark() {
+		return saleRemark;
+	}
+
+	public void setSaleRemark(String saleRemark) {
+		this.saleRemark = saleRemark;
+	}
+
+	public Float getGrossProfit() {
 	    if (grossProfit == null) {
 	        grossProfit = amountPayable - amountCostPrice;
         }
@@ -378,7 +410,7 @@ public class SaleList {
 
 	@Override
 	public String toString() {
-		return "SaleList [id=" + id + ", saleNumber=" + saleNumber + ", customer=" + customer
+		return "SaleList [id=" + id + ", saleNumber=" + saleNumber
 				+ ", saleDate=" + saleDate + ", amountPayable=" + amountPayable + ", amountPaid=" + amountPaid
 				+ ", state=" + state + ", user=" + user + ", remarks=" + remarks + "]";
 	}
